@@ -284,14 +284,19 @@ function colourDone(bs,cap,c){for(const b of bs)if(b[0]===c&&isFullMono(b,cap))r
 const capOf=(meta,cap,j)=>meta[j].cap||cap;
 // why a bottle can't take part right now ('' = free). moves = moves made so far.
 // Treasure chest: its bottles stay locked until the bottle with the key is emptied, then the chest opens for good
-function afterMove(bs,meta){const k=meta.findIndex(m=>m.key);if(k>=0&&!bs[k].length)return meta.map(m=>m.chest||m.key?{...m,chest:0,key:0}:m);return meta}
+function afterMove(bs,meta,src){const k=meta.findIndex(m=>m.key);if(k>=0&&!bs[k].length)meta=meta.map(m=>m.chest||m.key?{...m,chest:0,key:0}:m);
+  // Wandering Bemo: after every pour she hops onto the bottle you just poured from
+  // she makes three hops, then wanders off the board (curtain = hops left + 1)
+  if(src!=null){const w=meta.findIndex(m=>m.curtain);if(w>=0&&w!==src){const left=meta[w].curtain-1;meta=meta.map((m,q)=>q===w?{...m,curtain:0}:q===src&&left>0?{...m,curtain:left}:m)}}
+  return meta}
 // Ribbon twins: pouring into one twin tugs the other twin's top layer across into it too (if there is room)
 function tieTug(nb,meta,cap,i,j,mv){const t=meta[j].narrow;if(!t)return -1;const k=t-1;
   if(k===i||!nb[k].length||isFullMono(nb[k],cap)||nb[j].length>=capOf(meta,cap,j)||blocked(nb,meta,cap,k,mv))return -1;
   const u=nb[k][nb[k].length-1];nb[k]=nb[k].slice(0,-1);nb[j]=nb[j].concat([u]);return k}
-function curtained(bs,meta,cap,i){return meta[i].curtain>countDone(bs,cap)}
+function curtained(){return false}
 function blocked(bs,meta,cap,i,moves){const m=meta[i];
   if(m.chest)return 'chest';
+  if(m.curtain)return 'bemo';
   if(m.rock>=0&&!isFullMono(bs[m.rock],cap))return 'rock';   // rock cracks open once the bottle next to it is finished
   if(m.lock>countDone(bs,cap))return 'nap';
   if(m.bell>=0&&!colourDone(bs,cap,m.bell))return 'bell';
@@ -312,7 +317,7 @@ function canPour(bs,meta,cap,i,j,moves){
 }
 function isSolved(bs,cap){return bs.every(b=>!b.length||isFullMono(b,cap))}
 function anyMove(bs,meta,cap,moves){for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++)if(canPour(bs,meta,cap,i,j,moves))return true;return false}
-const plain=m=>m.collar<0&&!m.lock&&m.bell<0&&!m.frozen&&!m.cap&&!m.narrow&&!m.jar&&!m.curtain&&!(m.fire>=0)&&!m.chest&&!m.key&&!(m.rock>=0);
+const plain=m=>m.collar<0&&!m.lock&&m.bell<0&&!m.frozen&&!m.cap&&!m.narrow&&!m.jar&&!(m.fire>=0)&&!m.chest&&!m.key&&!(m.rock>=0);
 function solve(bs0,meta,cap,limit,moves0){
   limit=limit||150000;const seen=new Set();let nodes=0;const path=[];const n=bs0.length;
   const maxF=Math.max(0,...meta.map(m=>m.frozen||0));
@@ -320,7 +325,7 @@ function solve(bs0,meta,cap,limit,moves0){
   function dfs(bs,mv,meta){
     if(isSolved(bs,cap))return true;
     if(++nodes>limit)throw 0;
-    const key=bs.map(b=>String.fromCharCode(...b.map(v=>65+v))).join('|')+(maxF?'#'+Math.min(mv,maxF):'')+(hasKey&&!meta.some(m=>m.key)?'!':'');
+    const key=bs.map(b=>String.fromCharCode(...b.map(v=>65+v))).join('|')+(maxF?'#'+Math.min(mv,maxF):'')+(hasKey&&!meta.some(m=>m.key)?'!':'')+'@'+meta.map(m=>m.curtain||'').join('');
     if(seen.has(key))return false;seen.add(key);
     const cand=[];
     for(let i=0;i<n;i++){const a=bs[i];if(!a.length)continue;
@@ -335,13 +340,13 @@ function solve(bs0,meta,cap,limit,moves0){
       if(!bs[j].length&&plain(meta[j])){if(triedEmpty.has(i))continue;triedEmpty.add(i)}
       const nb=bs.slice();const c=bs[i][bs[i].length-1];
       nb[i]=bs[i].slice(0,bs[i].length-amt);nb[j]=bs[j].concat(Array(amt).fill(c));tieTug(nb,meta,cap,i,j,mv);
-      path.push([i,j]);if(dfs(nb,mv+1,afterMove(nb,meta)))return true;path.pop();
+      path.push([i,j]);if(dfs(nb,mv+1,afterMove(nb,meta,i)))return true;path.pop();
     }
     return false;
   }
   try{return dfs(bs0.map(b=>b.slice()),moves0||0,meta)?path.slice():null}catch(e){return undefined}
 }
-const MECH_INTRO={collar:10,nap:16,tall:28,frozen:34,bell:40,kitten:46,narrow:52,jar:58,curtain:64,fire:72,chest:82,rock:92,mega:107};
+const MECH_INTRO={collar:10,nap:16,tall:28,frozen:34,bell:40,kitten:46,jar:58,curtain:64,fire:72,chest:82,rock:92,mega:107};
 // Super levels ("Cat Marathon"): every 33rd level that isn't a Brutal one, kinds in turn. Longer, never harder.
 const SUPER_TYPES=['relay','bigsort','towers','waterfall'],SUPER_ON={relay:1,bigsort:1,towers:1,waterfall:1};   // switched on one at a time
 // Brutal levels: every 99th, plus one in each other run of ten from level 70, nudged off chapter, letter, golden and marathon levels
@@ -365,10 +370,10 @@ function levelCfg(L,st){const sup=superType(L);if(sup)return superCfg(L,sup,st||
   let colors=L===1?2:L<=3?3:L<=5?4:L<=8?5:Math.min(10,5+Math.floor((L-6)/3));
   let cap=4;
   const m={collar:L>=10&&L%2===0,nap:L>=16&&L%3===1,tall:L>=28&&L%4===0,frozen:L>=34&&L%5===4,
-           bell:L>=40&&L%6===4,kitten:L>=46&&L%7===4,narrow:L>=52&&L%8===4,jar:L>=58&&L%9===4,curtain:false,fire:false,chest:false,rock:false};
+           bell:L>=40&&L%6===4,kitten:L>=46&&L%7===4,narrow:false,jar:L>=58&&L%9===4,curtain:false,fire:false,chest:false,rock:false};
   const intro=Object.keys(MECH_INTRO).find(k=>MECH_INTRO[k]===L);
   if(isBrutal(L)){   // Brutal: full colours and four mechanics at once
-    const sets=[['bell','frozen','jar','narrow'],['nap','collar','kitten','narrow'],['bell','collar','frozen','kitten'],['nap','jar','narrow','frozen']];
+    const sets=[['bell','frozen','jar','fire'],['nap','collar','kitten','curtain'],['bell','collar','frozen','kitten'],['nap','jar','fire','frozen']];
     const pick=sets[(brutalIndex(L)-1)%sets.length];for(const k in m)m[k]=pick.includes(k);return {colors:10,cap:4,empties:2,brutal:true,...m}}
   if(intro){for(const k in m)m[k]=k===intro}            // a new mechanic gets its level to itself
   else if(L>=60){   // every mechanic is known by now: a fair random mix on every level, usually two, sometimes three, the odd breather with one
@@ -415,7 +420,7 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
       if(c.narrow){   // ribbon twins: a full bottle tied to a spare, so pouring into the spare tugs a layer out of its full twin (and back)
         const a=freeFull(),b=[E1,E2].find(q=>plain(meta[q])&&!bs[q].length);
         if(a>=0&&b!=null){meta[a].narrow=b+1;meta[b].narrow=a+1}}
-      if(c.curtain)for(let n=0;n<two;n++){const i=freeFull();if(i>=0)meta[i].curtain=n+1}   // hidden until 1 (or 2) bottles are finished
+      if(c.curtain){const i=freeFull();if(i>=0)meta[i].curtain=4}   // Wandering Bemo starts on a full bottle, then hops three times
       if(c.fire){   // fire bottle: starts with one layer of a colour (taken from a full bottle), never pours out, only takes that colour
         const nf=c.multi?2:1;for(let n=0;n<nf;n++){const x=pal[Math.floor(r()*pal.length)];if(meta.some(q=>q.fire===x))continue;
           const src=[];for(let i=0;i<c.colors;i++)if(bs[i].length===c.cap&&bs[i].includes(x))src.push(i);if(!src.length)continue;
@@ -439,13 +444,13 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
 function trapLite(lv,seed){const r=mulberry(seed||1);let dead=0;
   for(let p=0;p<24;p++){let bs=lv.bs.map(b=>b.slice()),mv=0,meta=lv.meta;
     for(let d=0;d<60;d++){const ms=[];for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++){const a=canPour(bs,meta,lv.cap,i,j,mv);if(a)ms.push([i,j,a])}
-      if(!ms.length){if(!isSolved(bs,lv.cap))dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta);
+      if(!ms.length){if(!isSolved(bs,lv.cap))dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta,i);
       if(isSolved(bs,lv.cap))break}}
   return dead/24}
 function trapScore(lv,seed,P,D){P=P||24;D=D||14;const r=mulberry(seed||1);let dead=0;
   for(let p=0;p<P;p++){let bs=lv.bs.map(b=>b.slice()),mv=0,meta=lv.meta;
     for(let d=0;d<D;d++){const ms=[];for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++){const a=canPour(bs,meta,lv.cap,i,j,mv);if(a)ms.push([i,j,a])}
-      if(!ms.length){dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta);
+      if(!ms.length){dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta,i);
       if(isSolved(bs,lv.cap))break;if(solve(bs,meta,lv.cap,40000,mv)===null){dead++;break}}}
   return dead/P}
 /*ENGINE-END*/
@@ -784,8 +789,6 @@ function drawBottle(i,time){
     if(!top)underTop=L;
     lower=L;
   }
-  if(b.cur>0.01){   // Bemo hugging the bottle hides what is inside (she slides down a little to give a peek)
-    const pk=b.peek>performance.now(),y0=pk?Math.min(underTop,maxY)-2:minY-30;g.globalAlpha=b.cur;g.fillStyle='#231e30';g.fillRect(minX-8,y0,maxX-minX+16,maxY+12-y0);g.globalAlpha=1}
   g.restore();
   // front glass, then ears + rim
   if(kit||!art(pre+'Front',k,0,0,120,artH)){g.lineWidth=4*k;g.strokeStyle='rgba(251,243,228,.88)';bodyPath(k,false,I.bot-2*k);g.stroke();
@@ -816,9 +819,7 @@ function drawBottle(i,time){
     g.restore()}
   if(b.smoke&&performance.now()-b.smoke<1600){const p=(performance.now()-b.smoke)/1600;g.save();g.globalAlpha=(1-p)*.7;g.fillStyle='#cfc8e0';
     for(let q=0;q<6;q++){g.beginPath();g.arc((q-2.5)*14*k+Math.sin(q+p*6)*6*k,I.bot-p*160*k-q*8*k,(10+q*2+p*16)*k,0,7);g.fill()}g.restore()}
-  if(b.cur>0.01&&ok(IMG.bemoHug)){const im=IMG.bemoHug,bot=I.bot,hh=bot+30*k,hw=Math.min(128*k,hh*im.naturalWidth/im.naturalHeight),pk=b.peek>performance.now(),hop=1-b.cur;
-    const dn=pk?unitVol(w)/(72*k*XS)*1.05:0;   // slide down by one layer when peeking
-    g.save();g.globalAlpha=b.cur;g.translate(0,dn-hop*80*k+Math.sin(time/800+i)*AN*1.2*k);g.drawImage(im,-hw/2,bot-hh+12*k,hw,hh);g.restore()}
+
   // narrow neck: two cream wedges pinch the mouth
   // narrow neck: the glass pinches in like an hourglass, with a pink ribbon tied tight at the waist
   if(M.narrow){
@@ -941,7 +942,14 @@ function drawHintArrow(t){
   g.restore();
 }
 /* ---------- Treasure chest: covers its row until the key bottle is emptied ---------- */
-let chestT=0,chestShake=0,tugFx=null;
+let chestT=0,chestShake=0,tugFx=null,bemoHop=null;
+function drawBemo(t){let w0=S.meta.findIndex(m=>m.curtain),gone=false;if(w0<0&&bemoHop&&bemoHop.to<0&&t-bemoHop.t0<700){w0=bemoHop.from;gone=true}if(w0<0||!ok(IMG.bemoHug))return;const im=IMG.bemoHug,w=curW,k=w/(78*XS),bot=stdBot(k);
+  const hh=bot+30*k,hw=Math.min(128*k,hh*im.naturalWidth/im.naturalHeight)*XS;
+  const at=q=>{const b=B[q];return[b.hx+b.ox+b.shake,b.hy+b.oy-b.lift]};let [x,y]=at(w0),arc=0,rot=0;
+  if(gone){const p=(t-bemoHop.t0)/700;arc=-p*w*3;rot=p*.6}
+  else if(bemoHop&&t-bemoHop.t0<520&&B[bemoHop.from]){const p=ease.inOut((t-bemoHop.t0)/520),[x0,y0]=at(bemoHop.from);x=x0+(x-x0)*p;y=y0+(y-y0)*p;arc=-Math.sin(p*Math.PI)*w*1.6;rot=Math.sin(p*Math.PI*2)*.25}
+  g.save();g.translate(x,y+arc+(AN?Math.sin(t/800+w0)*1.2*k:0));g.rotate(rot);g.globalAlpha=gone?.62*(1-(t-bemoHop.t0)/700):.62;g.drawImage(im,-hw/2,bot-hh+12*k,hw,hh);g.restore();
+  if(!gone){const left=S.meta[w0].curtain-1;g.save();g.translate(x,y-w*.95);for(let q=0;q<3;q++){g.fillStyle=q<left?'#ffd166':'rgba(255,255,255,.25)';g.beginPath();g.arc((q-1)*w*.2,0,w*.065,0,7);g.fill()}g.restore()}}
 function drawRibbons(t){const done=new Set();S.meta.forEach((m,i)=>{if(!m.narrow)return;const k=m.narrow-1;if(done.has(k)||!B[i]||!B[k])return;done.add(i);
   const w=curW,a=B[i],b=B[k],ya=a.hy+a.oy-a.lift+w*.26,yb=b.hy+b.oy-b.lift+w*.26,xa=a.hx+a.ox,xb=b.hx+b.ox,mid=(xa+xb)/2,sag=Math.min(w*1.4,Math.abs(xb-xa)*.18+Math.abs(yb-ya)*.1);
   const pulse=tugFx&&((tugFx.a===i&&tugFx.b===k)||(tugFx.a===k&&tugFx.b===i))?Math.max(0,1-(t-tugFx.t0)/600):0;
@@ -975,7 +983,7 @@ function frame(t){
   const hid=chestHidden(t);
   for(const i of order){if(B[i].z===2)drawStream();if(!hid.has(i))drawBottle(i,t)}
   if(!order.some(i=>B[i].z===2))drawStream();
-  drawChest(t);drawRibbons(t);
+  drawChest(t);drawRibbons(t);drawBemo(t);
   drawParts(dt);
   requestAnimationFrame(frame);
 }
@@ -986,8 +994,7 @@ async function pour(i,j){
   const amt=canPour(S.units,S.meta,S.cap,i,j,S.moves);
   if(!amt){shake(i);shake(j);Snd.play('invalid');S.sel=-1;
     const why=blocked(S.units,S.meta,S.cap,j,S.moves);
-    if(curtained(S.units,S.meta,S.cap,i)&&S.units[i].length&&!why){B[i].peek=performance.now()+1600;toast(`Bemo shifts a paw: ${COLORS[S.units[i][S.units[i].length-1]].name} is on top.`)}
-    else if(why)toast(blockText(j,why));
+    if(why)toast(blockText(j,why));
     else if(S.meta[j].fire>=0&&S.units[i].length&&S.units[i][S.units[i].length-1]!==S.meta[j].fire)toast(`Only ${COLORS[S.meta[j].fire].name} can put this fire out.`);
     else if(S.meta[j].collar>=0&&S.units[i].length&&S.units[i][S.units[i].length-1]!==S.meta[j].collar)toast(`That bottle's collar only takes ${COLORS[S.meta[j].collar].name}.`);
     else if(S.meta[j].cap&&S.units[j].length>=S.meta[j].cap)toast('That kitten bottle is full. It only holds two.');
@@ -1026,7 +1033,8 @@ async function pour(i,j){
   {const tk=tieTug(S.units,S.meta,S.cap,i,j,S.moves-1);if(tk>=0){const tb=B[tk];tb.segs=segsOf(S.units[tk]);dst.segs=segsOf(S.units[j]);tb.wob=.9;dst.wob=Math.max(dst.wob,.8);Snd.play('select');
       if(S.tags){S.tags[tk]=S.tags[tk].slice(0,S.units[tk].length);S.tags[j]=S.tags[j].concat([''])}tugFx={a:tk,b:j,t0:performance.now()};
       if(!S.seen.tugTip){S.seen.tugTip=1;save();toast('Tug! The ribbon pulled a layer across from its twin.')}}}
-  {const was=S.meta.some(m=>m.chest);S.meta=afterMove(S.units,S.meta);if(was&&!S.meta.some(m=>m.chest))openChest()}
+  {const was=S.meta.some(m=>m.chest);const bw=S.meta.findIndex(m=>m.curtain);S.meta=afterMove(S.units,S.meta,i);if(was&&!S.meta.some(m=>m.chest))openChest();
+   {const nw=S.meta.findIndex(m=>m.curtain);if(bw>=0&&nw!==bw){bemoHop={from:bw,to:nw,t0:performance.now()};B[bw].wob=.6;if(nw>=0)B[nw].wob=.6;else{Snd.play('wake');toast('Bemo wandered off for a nap. All clear!')}}}}
   if(S.tags){S.tags[i]=S.tags[i].slice(0,v1);S.tags[j]=S.tags[j].concat(Array(amt).fill(''))}
   src.segs=segsOf(S.units[i]);dst.segs=segsOf(S.units[j]);
   const ex=src.ox,ey=src.oy,ea=src.ang;
@@ -1039,7 +1047,7 @@ async function pour(i,j){
     if(b.ice>0.5&&r!=='frozen'){Snd.play('hint');tween(700,p=>b.ice=1-p,ease.inOut,200).then(()=>b.wob=.8)}
     if(b.rock>0.5&&r!=='rock'){Snd.play('invalid');b.rockT=performance.now();b.rock=0;burstAt(b.hx,b.hy+curW*1.5,24);b.wob=.8}
     if(b.fire>0.5&&isFullMono(S.units[k],S.cap)){Snd.play('hint');b.smoke=performance.now();tween(800,p=>b.fire=1-p,ease.inOut,150)}
-    if(b.cur>0.5&&!curtained(S.units,S.meta,S.cap,k)){Snd.play('wake');tween(900,p=>b.cur=1-p,ease.inOut,300).then(()=>b.wob=.8)}});
+});
   S.busy=false;updateUI();
   await back;
   if(isSolved(S.units,S.cap))return win();
@@ -1047,6 +1055,7 @@ async function pour(i,j){
   else if(!S.deadWarned)setTimeout(checkStuck,60);
 }
 function blockText(i,why){const m=S.meta[i];
+  if(why==='bemo')return 'Bemo is lounging on that one! She hops onto whichever bottle you pour from.';
   if(why==='rock')return 'Stuck in rock! Finish the bottle next to it to crack it open.';
   if(why==='chest'){chestShake=performance.now()+300;return 'Locked in the chest. Empty the bottle with the golden key to open it.'}
   if(why==='nap')return 'That cat is napping. Finish any bottle to wake her.';
@@ -1078,7 +1087,7 @@ const HELP={
   bell:{title:'Bell cats',short:'<b>Bell</b> cat wakes when her colour is sorted',text:'This cat wears a coloured bell. She keeps her bottle shut until you finish a bottle of that exact colour.'},
   kitten:{title:'Kitten bottles',short:'<b>Kitten</b> bottle holds two',text:'A little bottle that only holds two layers. Handy for parking colours, but it must be empty when you finish.'},
   narrow:{title:'Ribbon twins',short:'<b>Ribbon</b> twins: pour into one and it tugs the other',text:'Two bottles are tied together with a pink ribbon. Whenever you pour into one, the ribbon tugs the top layer of its twin across into it too, as long as there is room. Use it to move two layers at once, but watch what comes along!'},
-  curtain:{title:'Clingy Bemo',short:'<b>Clingy</b> Bemo hides a bottle until one is done',text:'Bemo is lounging on a bottle so you can\'t see inside. You can still pour in and out as normal. Try a pour she won\'t allow and she shifts a paw to show you the top colour. She hops off once you finish any bottle.'},
+  curtain:{title:'Wandering Bemo',short:'<b>Bemo</b> hops onto the bottle you pour from',text:'Bemo is lounging on a bottle, so you can\'t pour into it or out of it. After each pour she hops onto the bottle you just poured from. The gold dots show how many hops she has left: after three hops she wanders off for a nap.'},
   fire:{title:'Fire bottles',short:'<b>Fire</b> bottle takes only its colour, never pours',text:'This bottle is on fire! It starts with one colour inside, and nothing can be poured out of it. Fill it right up with that same colour to put the fire out.'},
   mega:{title:'Mega-tall bottles',short:'<b>Mega</b> bottles hold eight',text:'Every bottle on this board is extra tall and holds eight layers. Fewer colours, but lots of pouring!'},
   rock:{title:'Rock bottles',short:'<b>Rock</b> breaks when the bottle beside it is done',text:'A bottle is stuck inside a rock, so you can\'t see it or use it. The cracks point to the bottle next door: finish that bottle and the rock breaks open.'},
@@ -1600,7 +1609,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v29';let shown=false;
+  const BUILD='mb-water-v31';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
