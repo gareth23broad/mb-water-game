@@ -308,12 +308,13 @@ function blocked(bs,meta,cap,i,moves){const m=meta[i];
 function canPour(bs,meta,cap,i,j,moves){
   if(i===j)return 0;const a=bs[i],b=bs[j];if(!a.length)return 0;
   const mi=meta[i],mj=meta[j];
-  if(mi.jar||mi.fire>=0)return 0;   // jars and fire bottles never pour out
+  if(mi.jar||mi.fire>=0||mi.long)return 0;   // jars, fire and long bottles never pour out
   if(isFullMono(a,cap)||b.length>=capOf(meta,cap,j))return 0;
   if(blocked(bs,meta,cap,i,moves||0)||blocked(bs,meta,cap,j,moves||0))return 0;
   const top=a[a.length-1];
   if(mj.collar>=0&&mj.collar!==top)return 0;
   if(mj.fire>=0&&mj.fire!==top)return 0;   // only its own colour puts a fire out
+  if(mj.long&&mj.lc!==top)return 0;   // the long bottle only takes its own colour
   if(b.length&&b[b.length-1]!==top)return 0;
   let run=1;for(let k=a.length-2;k>=0&&a[k]===top;k--)run++;
   return Math.min(run,capOf(meta,cap,j)-b.length);
@@ -402,14 +403,14 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
     const pal=shuffle([...Array(10).keys()],r).slice(0,c.colors);
     if(L%50===0){const k=pal.indexOf(2);pal[k>=0?k:0]=10}   // golden level: Gold takes Butter's place
     const lcap=c.tall?(L>=200?7:6):0,lc=c.tall?pal[Math.floor(r()*pal.length)]:-1;LONGCOL=lc;LONGCAP=lcap;
-    const pool=[];pal.forEach(p=>{for(let k=0;k<(p===lc?lcap:c.cap);k++)pool.push(p)});shuffle(pool,r);
+    const pool=[];pal.forEach(p=>{for(let k=0;k<c.cap;k++)pool.push(p)});shuffle(pool,r);
     const bs=[];for(let i=0;i<c.colors;i++)bs.push(pool.slice(i*c.cap,(i+1)*c.cap));
     if(bs.some(b=>b.every(v=>v===b[0])))continue;
     let pairs=0;bs.forEach(b=>{for(let k=1;k<b.length;k++)if(b[k]===b[k-1])pairs++});
     if(pairs>Math.max(1,Math.floor(c.colors*0.5))*(c.cap>5?3:1))continue;
     const meta=bs.map(M0);
     for(let e=0;e<c.empties;e++){bs.push([]);meta.push(M0())}
-    if(c.tall){bs.push(pool.slice(c.colors*c.cap));meta.push({...M0(),cap:lcap,long:1,lc})}   // the long bottle starts with the extra layers
+    if(c.tall){bs.push(Array(lcap-c.cap).fill(lc));meta.push({...M0(),cap:lcap,long:1,lc})}   // the long bottle starts with the extra layers of its own colour
     const E1=c.colors,E2=c.colors+1;   // the two spare bottles
     if(!relax){
       const two=c.multi?2:1;
@@ -418,16 +419,16 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
         for(let q=0;q<nc;q++){meta[ids[q]].chest=1;meta[ids[q]].crow=1}meta[ids[nc]].key=1}   // key on the bottom layer of another full bottle
       const cats=[];   // sleeping cats are wide, so keep them off neighbouring bottles
       const freeFull=apart=>{let f=[];for(let i=0;i<c.colors;i++)if(plain(meta[i]))f.push(i);if(apart){const g=f.filter(i=>cats.every(j=>Math.abs(i-j)>1));if(g.length)f=g}const i=f.length?f[Math.floor(r()*f.length)]:-1;if(apart&&i>=0)cats.push(i);return i};
-      if(c.collar){meta[E2].collar=pal[Math.floor(r()*pal.length)];if(two>1){const i=freeFull();if(i>=0)meta[i].collar=pal.filter(p=>p!==meta[E2].collar)[Math.floor(r()*(pal.length-1))]}}
+      if(c.collar){const cp=pal.filter(p=>p!==lc);meta[E2].collar=cp[Math.floor(r()*cp.length)];if(two>1){const i=freeFull(),cq=cp.filter(p=>p!==meta[E2].collar);if(i>=0&&cq.length)meta[i].collar=cq[Math.floor(r()*cq.length)]}}
       if(c.nap)for(let n=0;n<two;n++){const i=freeFull(1);if(i>=0)meta[i].lock=n+1}
       if(c.frozen)for(let n=0;n<two;n++){const i=freeFull();if(i>=0)meta[i].frozen=2+Math.floor(r()*4)+n*2}
-      if(c.bell)for(let n=0;n<1;n++){const i=freeFull(1);if(i>=0){const opts=pal.filter(p=>!bs[i].includes(p)&&!meta.some(q=>q.bell===p));if(opts.length)meta[i].bell=opts[Math.floor(r()*opts.length)]}}
+      if(c.bell)for(let n=0;n<1;n++){const i=freeFull(1);if(i>=0){const opts=pal.filter(p=>p!==lc&&!bs[i].includes(p)&&!meta.some(q=>q.bell===p));if(opts.length)meta[i].bell=opts[Math.floor(r()*opts.length)]}}
       if(c.narrow){   // ribbon twins: a full bottle tied to a spare, so pouring into the spare tugs a layer out of its full twin (and back)
         const a=freeFull(),b=[E1,E2].find(q=>plain(meta[q])&&!bs[q].length);
         if(a>=0&&b!=null){meta[a].narrow=b+1;meta[b].narrow=a+1}}
       if(c.curtain){const i=freeFull();if(i>=0)meta[i].curtain=4}   // Wandering Bemo starts on a full bottle, then hops three times
       if(c.fire){   // fire bottle: starts with one layer of a colour (taken from a full bottle), never pours out, only takes that colour
-        const nf=c.multi?2:1;for(let n=0;n<nf;n++){const x=pal[Math.floor(r()*pal.length)];if(meta.some(q=>q.fire===x))continue;
+        const nf=c.multi?2:1;for(let n=0;n<nf;n++){const x=pal[Math.floor(r()*pal.length)];if(x===lc||meta.some(q=>q.fire===x))continue;
           const src=[];for(let i=0;i<c.colors;i++)if(bs[i].length===c.cap&&bs[i].includes(x))src.push(i);if(!src.length)continue;
           const si=src[Math.floor(r()*src.length)],at=bs[si].lastIndexOf(x);bs[si]=bs[si].slice(0,at).concat(bs[si].slice(at+1));
           let e=[E1,E2].find(q=>plain(meta[q])&&!bs[q].length&&q!==E1+(c.kitten?0:99));if(e==null){bs.push([]);meta.push(M0());e=bs.length-1}
@@ -1013,6 +1014,7 @@ async function pour(i,j){
   if(!amt){shake(i);shake(j);Snd.play('invalid');S.sel=-1;
     const why=blocked(S.units,S.meta,S.cap,j,S.moves);
     if(why)toast(blockText(j,why));
+    else if(S.meta[j].long&&S.units[i].length&&S.units[i][S.units[i].length-1]!==S.meta[j].lc)toast(`Only ${COLORS[S.meta[j].lc].name} goes in the long bottle.`);
     else if(S.meta[j].fire>=0&&S.units[i].length&&S.units[i][S.units[i].length-1]!==S.meta[j].fire)toast(`Only ${COLORS[S.meta[j].fire].name} can put this fire out.`);
     else if(S.meta[j].collar>=0&&S.units[i].length&&S.units[i][S.units[i].length-1]!==S.meta[j].collar)toast(`That bottle's collar only takes ${COLORS[S.meta[j].collar].name}.`);
     else if(S.meta[j].cap&&S.units[j].length>=S.meta[j].cap)toast('That kitten bottle is full. It only holds two.');
@@ -1091,6 +1093,7 @@ function tap(x,y){
     if(!u.length||isFullMono(u,S.cap)){shake(hit);return}
     const why=blocked(S.units,S.meta,S.cap,hit,S.moves);if(why){shake(hit);toast(blockText(hit,why));return}
     if(S.meta[hit].jar){shake(hit);toast('Collection jars only take. Nothing pours back out.');return}
+    if(S.meta[hit].long){shake(hit);toast(`The long bottle keeps its ${COLORS[S.meta[hit].lc].name}. Fill it right up!`);return}
     if(S.meta[hit].fire>=0){shake(hit);toast(`Nothing pours out of a fire bottle. Fill it with ${COLORS[S.meta[hit].fire].name} to put it out.`);return}
     S.sel=hit;B[hit].wob=.5;Snd.play('select');return}
   if(S.sel===hit){S.sel=-1;return}
@@ -1101,7 +1104,7 @@ function tap(x,y){
 const HELP={
   collar:{title:'Collar bottles',short:'<b>Collar</b> bottles take only their colour',text:'A bottle wearing a collar only accepts the colour of its collar. You can still pour out of it.'},
   nap:{title:'Napping cats',short:'<b>Napping</b> cat wakes after any bottle is done',text:'A cat is asleep on one bottle. You can see what is inside, but it stays shut until you finish any one bottle.'},
-  tall:{title:'Long bottle',short:'<b>Long</b> bottle: fill it with its colour',text:'A long bottle stands at the side of the board. One colour has extra layers, shown on the long bottle\'s tag: gather every layer of it into the long bottle to finish it. Until then you can park any colours in it.'},
+  tall:{title:'Long bottle',short:'<b>Long</b> bottle takes only its colour',text:'A long bottle stands at the side of the board. It already holds a little of one colour, shown on its tag, and that colour has extra layers this level. It only takes that colour and nothing pours back out: fill it right up to finish it.'},
   frozen:{title:'Frozen bottles',short:'<b>Frozen</b> bottle thaws after a few moves',text:'An icy bottle can\'t be poured into or out of until it thaws. The number above it counts down with every move you make.'},
   bell:{title:'Bell cats',short:'<b>Bell</b> cat wakes when her colour is sorted',text:'This cat wears a coloured bell. She keeps her bottle shut until you finish a bottle of that exact colour.'},
   kitten:{title:'Kitten bottles',short:'<b>Kitten</b> bottle holds two',text:'A little bottle that only holds two layers. Handy for parking colours, but it must be empty when you finish.'},
@@ -1629,7 +1632,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v33';let shown=false;
+  const BUILD='mb-water-v34';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
