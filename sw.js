@@ -9,6 +9,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;               // fonts etc. go straight to the network
   // Network first, so updates arrive as soon as you publish; fall back to the saved copy when offline.
-  e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put(e.request, copy)); return r; })
+  // 'no-cache' asks GitHub whether the file changed before using any copy the phone kept, so updates arrive straight away.
+  e.respondWith(fetch(e.request, { cache: 'no-cache' }).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put(e.request, copy)); return r; })
     .catch(() => caches.match(e.request).then(m => m || caches.match('./index.html'))));
 });
