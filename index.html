@@ -238,7 +238,7 @@ button:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-r
 <div id="puz" hidden>
   <div class="puz-wrap">
     <small id="puzKick"></small><h2 id="puzTitle"></h2><p id="puzMsg"></p>
-    <canvas id="puzCv" aria-label="Picture puzzle: tap two pieces to swap them"></canvas>
+    <canvas id="puzCv" aria-label="Picture puzzle: flip two tiles to find matching pairs"></canvas>
     <div class="puz-bar" id="puzBar"><button class="btn ghost" id="puzUndo">Undo</button><button class="btn ghost" id="puzPeek">Peek</button><button class="btn ghost" id="puzSolve">Solve</button></div>
     <span class="puz-moves" id="puzMoves">0 moves</span>
     <button class="btn" id="puzNext" hidden></button>
@@ -1257,81 +1257,69 @@ function closeAlbum(){$('#album').hidden=true}
 function viewPage(c){const card=$('#card');card.innerHTML=`<small class="kick">Chapter ${c+1} · ${reward(c).name}</small><h2>${chapterName(c)}</h2><canvas class="page-big"></canvas><div class="row"><button class="btn">Close</button></div>`;
   card.querySelector('.btn').onclick=hideCard;$('#ov').hidden=false;$('#ov').dataset.dismiss='1';paintPic(card.querySelector('canvas'),c)}
 
-/* ---------- Picture puzzle: tap two tiles to swap them ---------- */
-const PZ={c:0,tiles:[],hist:[],moves:0,pic:null,anim:[],glow:{},sel:-1,peek:0,done:false,doneT:0,raf:0};
-const PG=3,PN=PG*PG;
-function shufflePuzzle(c){
-  const r=mulberry(c*1013+11);
-  for(let tries=0;tries<80;tries++){const t=[...Array(PN).keys()];
-    for(let k=PN-1;k>0;k--){const j=Math.floor(r()*(k+1));[t[k],t[j]]=[t[j],t[k]]}
-    const off=t.filter((v,i)=>v!==i).length;if(off>=7)return t}
-  return [1,2,0,4,5,3,7,8,6];
-}
+/* ---------- Picture puzzle: memory match on top of the album picture ---------- */
+// The picture hides under 16 face-down tiles. Flip two: a matching pair melts away and uncovers that part of the picture.
+const PZ={c:0,pic:null,tiles:[],open:[],lock:false,moves:0,matched:0,peek:0,done:false,doneT:0,raf:0};
+const PG=4,PN=PG*PG;
+function dealPuzzle(){const cols=shuffle([...Array(10).keys()],Math.random).slice(0,PN/2),deck=shuffle([...cols,...cols],Math.random);
+  return deck.map(c=>({c,face:0,flipT:0,up:false,gone:false,goneT:0,shake:0}))}
 async function openPuzzle(c){
   closeMap();closeAlbum();hideCard();S.sel=-1;
-  PZ.c=c;PZ.tiles=shufflePuzzle(c);PZ.hist=[];PZ.moves=0;PZ.anim=[];PZ.glow={};PZ.sel=-1;PZ.peek=0;PZ.done=false;PZ.solvedForYou=false;$('#puzMoves').hidden=false;Snd.puzzleOn();
-  $('#puzKick').textContent=`Album page · Chapter ${c+1}`;$('#puzTitle').textContent=chapterName(c);$('#puzMoves').textContent='0 swaps';
-  $('#puzNext').hidden=true;$('#puzBar').hidden=false;$('#puzMsg').textContent='Tap two pieces to swap them. Pieces glow when they are in the right place.';
+  PZ.c=c;PZ.tiles=dealPuzzle();PZ.open=[];PZ.lock=false;PZ.moves=0;PZ.matched=0;PZ.peek=0;PZ.done=false;PZ.solvedForYou=false;
+  $('#puzMoves').hidden=false;$('#puzUndo').hidden=true;Snd.puzzleOn();
+  $('#puzKick').textContent=`Album page · Chapter ${c+1}`;$('#puzTitle').textContent=chapterName(c);$('#puzMoves').textContent=`0 of ${PN/2} pairs`;
+  $('#puzNext').hidden=true;$('#puzBar').hidden=false;$('#puzMsg').textContent='Flip two tiles to find a matching pair. Each pair you find uncovers part of the picture.';
   $('#puz').hidden=false;PZ.pic=await chapterPicture(c);sizePuzzle();cancelAnimationFrame(PZ.raf);PZ.raf=requestAnimationFrame(puzFrame);
 }
 function sizePuzzle(){const cv=$('#puzCv'),d=Math.min(2.5,devicePixelRatio||1),s=Math.min(innerWidth-32,innerHeight-300,420);cv.style.width=cv.style.height=s+'px';cv.width=cv.height=Math.round(s*d)}
 function puzSlot(i,size){const g2=size*.014,ts=(size-g2*(PG+1))/PG;return{x:g2+(i%PG)*(ts+g2),y:g2+Math.floor(i/PG)*(ts+g2),ts}}
 function puzFrame(now){
   const cv=$('#puzCv'),x=cv.getContext('2d'),N=cv.width;x.clearRect(0,0,N,N);
-  x.fillStyle='#17122b';x.beginPath();x.roundRect(0,0,N,N,N*.03);x.fill();
-  PZ.anim=PZ.anim.filter(a=>now-a.t0<a.dur);
-  if(PZ.pic){
-    const order=[...Array(PN).keys()].sort((a,b)=>(PZ.anim.some(q=>q.tile===PZ.tiles[a])?1:0)-(PZ.anim.some(q=>q.tile===PZ.tiles[b])?1:0));
-    for(const i of order){const t=PZ.tiles[i];
-      const to=puzSlot(i,N);let px=to.x,py=to.y,lift=0;const an=PZ.anim.find(a=>a.tile===t);
-      if(an){const p=ease.inOut(Math.min(1,(now-an.t0)/an.dur)),fr=puzSlot(an.from,N);px=fr.x+(to.x-fr.x)*p;py=fr.y+(to.y-fr.y)*p;lift=Math.sin(p*Math.PI)}
-      const picked=PZ.sel===i&&!PZ.done,sc=1+(picked?.05:0)+lift*.06,cx=px+to.ts/2,cy=py+to.ts/2,ts=to.ts*sc;
-      x.save();x.translate(cx,cy);
-      if(picked||lift>0){x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=N*.03;x.shadowOffsetY=N*.008}
-      x.beginPath();x.roundRect(-ts/2,-ts/2,ts,ts,ts*.08);x.fillStyle='#17122b';x.fill();x.shadowColor='transparent';x.clip();
-      const sz=512/PG;x.drawImage(PZ.pic,(t%PG)*sz,Math.floor(t/PG)*sz,sz,sz,-ts/2,-ts/2,ts,ts);
-      x.restore();
-      if(!PZ.done){const ok2=t===i&&!an,gt=PZ.glow[t],pulse=gt?Math.max(0,1-(now-gt)/900):0;
-        x.save();x.translate(cx,cy);x.beginPath();x.roundRect(-ts/2+1,-ts/2+1,ts-2,ts-2,ts*.08);
-        if(picked){x.strokeStyle='#ffd166';x.lineWidth=N*.012;x.shadowColor='#ffd166';x.shadowBlur=N*.03;x.stroke()}
-        else if(ok2){x.strokeStyle=`rgba(255,209,102,${.55+.45*pulse})`;x.lineWidth=N*(.006+.01*pulse);x.shadowColor='#ffd166';x.shadowBlur=N*(.01+.04*pulse);x.stroke()}
-        else{x.strokeStyle='rgba(255,255,255,.18)';x.lineWidth=Math.max(1,N*.004);x.stroke()}
-        x.restore()}
-    }
-    if(PZ.peek>now){const a=Math.min(1,(PZ.peek-now)/250,1);x.globalAlpha=a;x.drawImage(PZ.pic,0,0,512,512,0,0,N,N);x.globalAlpha=1}
-    if(PZ.done){const q=Math.max(0,Math.min(1,(now-PZ.doneT-300)/600));if(q>0){x.save();x.globalAlpha=q;x.beginPath();x.roundRect(0,0,N,N,N*.03);x.clip();x.drawImage(PZ.pic,0,0,512,512,0,0,N,N);x.restore()}
-      const p=Math.min(1,(now-PZ.doneT)/900);x.strokeStyle=`rgba(255,209,102,${p})`;x.lineWidth=N*.012;x.beginPath();x.roundRect(N*.006,N*.006,N*.988,N*.988,N*.03);x.stroke()}
-  }
+  x.save();x.beginPath();x.roundRect(0,0,N,N,N*.03);x.clip();x.fillStyle='#17122b';x.fillRect(0,0,N,N);
+  if(PZ.pic)x.drawImage(PZ.pic,0,0,512,512,0,0,N,N);x.restore();
+  const peek=PZ.peek>now;
+  for(let i=0;i<PN;i++){const t=PZ.tiles[i];if(!t)continue;const sl=puzSlot(i,N);
+    let fade=1;if(t.gone){fade=1-Math.min(1,(now-t.goneT)/450);if(fade<=0)continue}
+    // flip: 0 = back, 1 = face. Animate towards target.
+    const want=(t.up||peek)?1:0,p=Math.min(1,(now-t.flipT)/220);t.face=t.face+(want-t.face)*(t.flipT?p:1);if(p>=1)t.face=want;
+    const showFace=t.face>.5,sx=Math.abs(Math.cos(t.face*Math.PI))||.02,sh=t.shake>now?Math.sin((t.shake-now)/18)*N*.008:0;
+    const cx=sl.x+sl.ts/2+sh,cy=sl.y+sl.ts/2,ts=sl.ts*(t.gone?1+(1-fade)*.12:1);
+    x.save();x.globalAlpha=fade;x.translate(cx,cy);x.scale(sx,1);
+    x.beginPath();x.roundRect(-ts/2,-ts/2,ts,ts,ts*.12);
+    if(showFace){x.fillStyle=COLORS[t.c].hex;x.fill();x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=N*.006;x.stroke();
+      const gi=IMG['g_'+COLORS[t.c].g];if(ok(gi)){x.globalAlpha=fade*.55;const gs=ts*.6;x.drawImage(gi,-gs/2,-gs/2,gs,gs)}}
+    else{const gr=x.createLinearGradient(0,-ts/2,0,ts/2);gr.addColorStop(0,'#40356f');gr.addColorStop(1,'#2c2350');x.fillStyle=gr;x.fill();
+      x.strokeStyle='rgba(255,209,102,.55)';x.lineWidth=N*.005;x.stroke();
+      x.fillStyle='rgba(255,209,102,.5)';x.beginPath();x.ellipse(0,ts*.08,ts*.12,ts*.1,0,0,7);x.fill();
+      for(const [px,py] of [[-.15,-.08],[-.055,-.17],[.055,-.17],[.15,-.08]]){x.beginPath();x.arc(px*ts,py*ts,ts*.045,0,7);x.fill()}}
+    x.restore()}
+  if(PZ.done){const p=Math.min(1,(now-PZ.doneT)/900);x.strokeStyle=`rgba(255,209,102,${p})`;x.lineWidth=N*.012;x.beginPath();x.roundRect(N*.006,N*.006,N*.988,N*.988,N*.03);x.stroke()}
   if(!$('#puz').hidden)PZ.raf=requestAnimationFrame(puzFrame);
 }
-function puzSwap(a,b,rec){const now=performance.now(),ta=PZ.tiles[a],tb=PZ.tiles[b],dur=reduce?60:260;
-  PZ.tiles[a]=tb;PZ.tiles[b]=ta;PZ.anim.push({tile:ta,from:a,t0:now,dur},{tile:tb,from:b,t0:now,dur});
-  if(rec){PZ.hist.push([a,b]);PZ.moves++}else PZ.moves=Math.max(0,PZ.moves-1);
-  $('#puzMoves').textContent=`${PZ.moves} swap${PZ.moves===1?'':'s'}`;
-  let good=0;for(const [p,t] of [[a,tb],[b,ta]])if(p===t){PZ.glow[t]=now+dur;good++}
-  return good}
+function flipTile(t,up){t.up=up;t.flipT=performance.now()}
 function puzTap(e){
-  if(PZ.done||!PZ.pic)return;const cv=$('#puzCv'),r=cv.getBoundingClientRect();
+  if(PZ.done||!PZ.pic||PZ.lock)return;const cv=$('#puzCv'),r=cv.getBoundingClientRect();
   const col=Math.floor((e.clientX-r.left)/r.width*PG),row=Math.floor((e.clientY-r.top)/r.height*PG);if(col<0||col>=PG||row<0||row>=PG)return;
-  const i=row*PG+col;
-  if(PZ.sel<0){if(PZ.tiles[i]===i){Snd.play('invalid');PZ.glow[i]=performance.now();return}PZ.sel=i;Snd.play('select');return}
-  if(PZ.sel===i){PZ.sel=-1;return}
-  const a=PZ.sel;PZ.sel=-1;const good=puzSwap(a,i,true);
-  setTimeout(()=>Snd.play(good?'hint':'select'),reduce?0:200);
-  if(PZ.tiles.every((v,k)=>v===k))setTimeout(puzSolved,reduce?80:300);
+  const i=row*PG+col,t=PZ.tiles[i];if(t.gone||t.up)return;
+  flipTile(t,true);PZ.open.push(i);Snd.play('select');
+  if(PZ.open.length<2)return;
+  const [a,b]=PZ.open;PZ.open=[];PZ.moves++;const A=PZ.tiles[a],B2=PZ.tiles[b];
+  if(A.c===B2.c){PZ.lock=true;setTimeout(()=>{const n=performance.now();A.gone=B2.gone=true;A.goneT=B2.goneT=n;PZ.matched++;PZ.lock=false;
+      $('#puzMoves').textContent=`${PZ.matched} of ${PN/2} pairs`;Snd.play('hint');if(PZ.matched===PN/2)setTimeout(puzSolved,350)},reduce?50:380)}
+  else{PZ.lock=true;setTimeout(()=>{const n=performance.now();A.shake=B2.shake=n+260},420);setTimeout(()=>{flipTile(A,false);flipTile(B2,false);PZ.lock=false},reduce?300:900)}
 }
-function puzUndo(){if(PZ.done||!PZ.hist.length)return;PZ.sel=-1;const [a,b]=PZ.hist.pop();puzSwap(a,b,false);Snd.play('undo')}
+function puzUndo(){}
 function askSolve(){if(PZ.done)return;
-  const c=$('#card');c.innerHTML=`<h2>Solve it for you?</h2><p>The pieces will fly into place and the page still goes in your album. Want to keep trying instead?</p><div class="row"><button class="btn ghost" id="noSolve">Keep trying</button><button class="btn" id="yesSolve">Yes, solve it</button></div>`;
+  const c=$('#card');c.innerHTML=`<h2>Solve it for you?</h2><p>The tiles will clear away and the page still goes in your album. Want to keep trying instead?</p><div class="row"><button class="btn ghost" id="noSolve">Keep trying</button><button class="btn" id="yesSolve">Yes, solve it</button></div>`;
   $('#noSolve').onclick=hideCard;$('#yesSolve').onclick=()=>{hideCard();autoSolve()};$('#ov').hidden=false;$('#ov').dataset.dismiss='1';setTimeout(()=>$('#noSolve').focus(),50)}
-function autoSolve(){if(PZ.done)return;const now=performance.now();PZ.sel=-1;
-  PZ.tiles.forEach((t,i)=>{if(t!==i)PZ.anim.push({tile:t,from:i,t0:now,dur:reduce?60:520})});
-  PZ.tiles=[...Array(PN).keys()];PZ.solvedForYou=true;setTimeout(puzSolved,reduce?80:560)}
+function autoSolve(){if(PZ.done)return;const n=performance.now();PZ.open=[];PZ.lock=true;
+  PZ.tiles.forEach((t,i)=>{if(!t.gone){t.up=true;t.face=1;t.gone=true;t.goneT=n+(reduce?0:(i%PG+Math.floor(i/PG))*70)}});
+  PZ.matched=PN/2;PZ.solvedForYou=true;setTimeout(puzSolved,reduce?80:700)}
 function puzSolved(){
-  PZ.done=true;PZ.sel=-1;PZ.doneT=performance.now()+160;const c=PZ.c;
+  PZ.done=true;PZ.lock=true;PZ.doneT=performance.now()+160;const c=PZ.c;
   S.album[c]=1;if(S.pending===c)S.pending=null;S.albumNew=1;save();
   setTimeout(()=>{Snd.play('milestone')},250);
-  $('#puzBar').hidden=true;$('#puzMoves').hidden=true;$('#puzMsg').textContent=PZ.solvedForYou?`Page added to your album. ${reward(c).name} is yours to keep.`:`Solved in ${PZ.moves} swap${PZ.moves===1?'':'s'}! Page added to your album. ${reward(c).name} is yours to keep.`;
+  $('#puzBar').hidden=true;$('#puzMoves').hidden=true;$('#puzMsg').textContent=PZ.solvedForYou?`Page added to your album. ${reward(c).name} is yours to keep.`:`All pairs found in ${PZ.moves} tries! Page added to your album. ${reward(c).name} is yours to keep.`;
   const nb=$('#puzNext');nb.hidden=false;nb.textContent=`On to ${chapterName(c+1)}`;nb.onclick=()=>{closePuzzle();startLevel((c+1)*15+1);updateUI();openMap()};
   setTimeout(()=>nb.focus(),400);
 }
@@ -1420,7 +1408,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v14';let shown=false;
+  const BUILD='mb-water-v15';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
