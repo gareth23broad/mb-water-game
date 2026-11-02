@@ -335,7 +335,13 @@ function solve(bs0,meta,cap,limit,moves0){
 const MECH_INTRO={collar:10,nap:16,tall:28,frozen:34,bell:40,kitten:46,narrow:52,jar:58,curtain:64};
 // Super levels ("Cat Marathon"): every 33rd level that isn't a Brutal one, kinds in turn. Longer, never harder.
 const SUPER_TYPES=['relay','bigsort','towers','waterfall'],SUPER_ON={relay:1,bigsort:1,towers:1,waterfall:1};   // switched on one at a time
-function superType(L){if(L%33||L%99===0)return '';const n=L/33,t=SUPER_TYPES[(n-Math.floor(n/3)-1)%4];return SUPER_ON[t]?t:''}
+// Brutal levels: every 99th, plus one in each other run of ten from level 70, nudged off chapter, letter, golden and marathon levels
+const BRUTAL_FROM=70;
+function brutalOf(n){if(n*10+9<BRUTAL_FROM)return 0;for(let L=n*10;L<n*10+10;L++)if(L%99===0)return L;
+  for(let L=n*10+9;L>n*10;L--)if(L%15&&L%25&&L%33&&!Object.values(MECH_INTRO).includes(L))return L;return 0}
+function isBrutal(L){return L>0&&brutalOf(Math.floor(L/10))===L}
+function brutalIndex(L){let c=0;for(let n=0;n<=Math.floor(L/10);n++){const b=brutalOf(n);if(b&&b<=L)c++}return c}
+function superType(L){if(L%33||isBrutal(L))return '';const n=L/33,t=SUPER_TYPES[(n-Math.floor(n/3)-1)%4];return SUPER_ON[t]?t:''}
 function superStages(L){const t=superType(L);return t==='relay'?(L>500?4:3):t==='waterfall'?(L>500?8:6):1}
 function superCfg(L,t,st){const off={collar:false,nap:false,tall:false,frozen:false,bell:false,kitten:false,narrow:false,jar:false};
   if(t==='bigsort')return{colors:10,cap:4,empties:4,...off,collar:true,superT:t};
@@ -348,24 +354,26 @@ function levelCfg(L,st){const sup=superType(L);if(sup)return superCfg(L,sup,st||
   const m={collar:L>=10&&L%2===0,nap:L>=16&&L%3===1,tall:L>=28&&L%4===0,frozen:L>=34&&L%5===4,
            bell:L>=40&&L%6===4,kitten:L>=46&&L%7===4,narrow:L>=52&&L%8===4,jar:L>=58&&L%9===4,curtain:false};
   const intro=Object.keys(MECH_INTRO).find(k=>MECH_INTRO[k]===L);
-  if(L%99===0){   // Brutal: full colours and four mechanics at once
+  if(isBrutal(L)){   // Brutal: full colours and four mechanics at once
     const sets=[['bell','frozen','jar','narrow'],['nap','collar','kitten','narrow'],['bell','collar','frozen','kitten'],['nap','jar','narrow','frozen']];
-    const pick=sets[(L/99-1)%sets.length];for(const k in m)m[k]=pick.includes(k);return {colors:10,cap:4,empties:2,brutal:true,...m}}
+    const pick=sets[(brutalIndex(L)-1)%sets.length];for(const k in m)m[k]=pick.includes(k);return {colors:10,cap:4,empties:2,brutal:true,...m}}
   if(intro){for(const k in m)m[k]=k===intro}            // a new mechanic gets its level to itself
   else if(L>=60){   // every mechanic is known by now: a fair random mix on every level, usually two, sometimes three, the odd breather with one
     const r=mulberry(L*2654435+97),keys=Object.keys(m).filter(q=>MECH_INTRO[q]<=L),u=r();const k=u<.12?1:u<.62?2:3;
     for(const q of Object.keys(m))m[q]=false;shuffle(keys,r).slice(0,k).forEach(q=>m[q]=true);
-    m.multi=L>=80&&r()<.55;m.spare=k===3||m.multi}   // some mechanics show up on two bottles at once; busier boards get a third spare bottle
+    m.multi=L>=80&&r()<.55}   // some mechanics show up on two bottles at once
   else{const on=Object.keys(m).filter(k=>m[k]);while(on.length>3)m[on.shift()]=false}   // at most three at once
   if(m.tall){cap=5;colors=Math.min(colors,8)}
-  const spare=m.spare;delete m.spare;
-  return {colors,cap,empties:spare?3:2,...m};
+  return {colors,cap,empties:2,...m};
 }
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function shuffle(arr,r){for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
 const M0=()=>({collar:-1,lock:0,bell:-1,frozen:0,cap:0,narrow:0,jar:0,curtain:0});
 function makeLevel(L,v,a0,st){v=v||0;st=st||0;
   const c=levelCfg(L,st);
+  // From level 30, build a few solvable layouts and keep the trickiest (more for Tricky levels). Marathons stay gentle.
+  const tk=typeof TRICKY!=='undefined'&&TRICKY.has(L),want=a0||c.superT||L<30?1:c.brutal?3:tk?8:4;const found=[];
+  const pick=()=>{if(found.length<2)return found[0];let best=found[0],bs=-1;for(const f of found){const t=trapLite(f,L*31+f.attempt);if(t>bs){bs=t;best=f}}return best};
   for(let attempt=a0||0;attempt<(a0||0)+(c.brutal?400:90);attempt++){
     const r=mulberry(L*7919+attempt*104729+17+v*7777777+st*31337);
     const relax=attempt-(a0||0)>=(c.brutal?380:60);
@@ -393,11 +401,19 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
       if(c.jar){const e=plain(meta[E2])?E2:plain(meta[E1])?E1:-1;if(e>=0)meta[e].jar=1;else{bs.push([]);meta.push({...M0(),jar:1})}}
     }
     const sol=solve(bs,meta,c.cap,c.brutal?300000:30000);
-    if(sol&&sol.length>=Math.min(c.colors*2,6))return{bs,meta,cap:c.cap,attempt};
+    if(sol&&sol.length>=Math.min(c.colors*2,6)){found.push({bs,meta,cap:c.cap,attempt});if(found.length>=want)return pick()}
   }
+  if(found.length)return pick();
   const bs=[],meta=[];for(let i=0;i<c.colors;i++){bs.push(Array(c.cap).fill(i));meta.push(M0())}
   return{bs,meta,cap:c.cap};
 }
+// Quick trickiness check: play 24 games of random pours and count how many paint themselves into a corner
+function trapLite(lv,seed){const r=mulberry(seed||1);let dead=0;
+  for(let p=0;p<24;p++){let bs=lv.bs.map(b=>b.slice()),mv=0;
+    for(let d=0;d<60;d++){const ms=[];for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++){const a=canPour(bs,lv.meta,lv.cap,i,j,mv);if(a)ms.push([i,j,a])}
+      if(!ms.length){if(!isSolved(bs,lv.cap))dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));mv++;
+      if(isSolved(bs,lv.cap))break}}
+  return dead/24}
 function trapScore(lv,seed,P,D){P=P||24;D=D||14;const r=mulberry(seed||1);let dead=0;
   for(let p=0;p<P;p++){let bs=lv.bs.map(b=>b.slice()),mv=0;
     for(let d=0;d<D;d++){const ms=[];for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++){const a=canPour(bs,lv.meta,lv.cap,i,j,mv);if(a)ms.push([i,j,a])}
@@ -1045,13 +1061,13 @@ function openSave(){
     S.unlocked=d.unlocked;S.seen={...S.seen,...d.seen};S.pending=null;autoFillAlbum();hideCard();startLevel(d.unlocked,true,0);save();toast(`Progress restored. Welcome back to level ${d.unlocked}.`)};
   $('#ov').hidden=false;$('#ov').dataset.dismiss='1'}
 /* ---------- Tricky and Brutal levels ---------- */
-const TRICKY=new Set(/*TRICKY_LIST*/[31,38,42,51,55,78,101,119,127,133,148,160,171,174,188,203,212,218,221,238,245,279,293,296,314,318,329,333,341,347,359,362,372,401,409,434,442,452,460,468,481,496,506,509,524,533,542,551,566,582,593,619,622,628,635,638,647,662,686,699,711,718,732,737,746,764,769,774,793,804,809,814,821,849,871,874,884,898,906,919,926,929,937,953,966,989,997]);          // the hardest ~1 in 10 levels, measured by how often wrong moves dead-end
+const TRICKY=new Set(/*TRICKY_LIST*/[31,38,42,51,55,76,101,121,127,133,146,162,171,174,186,203,212,216,221,236,245,281,293,299,314,321,331,333,341,347,361,362,372,401,411,434,442,452,463,466,481,498,506,511,524,533,542,551,566,582,591,621,622,626,635,641,647,662,686,699,711,716,732,737,746,764,771,774,796,804,811,814,821,851,871,874,884,898,906,921,926,931,937,953,966,987,997]);          // the hardest ~1 in 10 levels, measured by how often wrong moves dead-end
 const BRUTAL_A=/*BRUTAL_PICKS*/{"99":13,"198":0,"297":70,"396":2,"495":5,"594":35,"693":44,"792":7,"891":20,"990":31};                // the trap-heaviest layout found for each Brutal level
-function levelKind(L){return L%99===0?'brutal':superType(L)?'super':TRICKY.has(L)?'tricky':''}
+function levelKind(L){return isBrutal(L)?'brutal':superType(L)?'super':TRICKY.has(L)?'tricky':''}
 const SUPER_INFO={relay:{n:'Relay',u:'Round',t:'Three rounds back to back. Finish one board and the next pours straight in. Your place is saved between rounds.'},bigsort:{n:'Big Sort',u:'',t:'One huge board with every colour and four spare bottles. Lots of pouring and lots of room to move.'},towers:{n:'Tall Towers',u:'',t:'Every bottle is a tall one that holds five layers, and there are three spare bottles. Plenty of pours, nothing tricky.'},waterfall:{n:'Waterfall',u:'Wave',t:'Quick little boards that tumble in one after another. Sort a wave and the next one pours straight in.'}};
 function superStageText(){const t=superType(S.level),T=superStages(S.level);if(!t)return '';const I=SUPER_INFO[t];return `<b class="sup">Cat Marathon: ${I.n}</b>`+(T>1?` &middot; ${I.u} ${S.stage+1} of ${T} <span class="sdots">${Array.from({length:T},(_,k)=>`<i class="${k<S.stage?'d':k===S.stage?'c':''}"></i>`).join('')}</span>`:'')}
 const TROPHIES=[{n:'Bronze',c:'#d08a4c',d:'#8a5426'},{n:'Silver',c:'#d9dfec',d:'#8b93a8'},{n:'Gold',c:'#ffd166',d:'#b88a1d'},{n:'Diamond',c:'#a8ecff',d:'#4aa8c9'}];
-const trophyOf=L=>TROPHIES[(L/99-1)%4];
+const trophyOf=L=>TROPHIES[(Math.max(1,brutalIndex(L))-1)%4];
 function trophyImg(L,cls){const t=trophyOf(L),src=ART['trophy-'+t.n.toLowerCase()];return src?`<img ${cls?`class="${cls}" `:''}src="${src}" alt="${t.n} Paw Trophy">`:trophySVG(L,cls==='badge')}
 function ribbonSVG(cls){return `<svg class="${cls||'mini'}" viewBox="0 0 100 100" aria-label="Marathon ribbon"><path d="M36 58L24 94l14-8 8 14 10-40zM64 58l12 36-14-8-8 14-10-40z" fill="#4fd1c5" stroke="#1f6f6a" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="40" r="30" fill="#ffd166" stroke="#b88a1d" stroke-width="4"/><circle cx="50" cy="40" r="21" fill="#4fd1c5" stroke="#fbf3e4" stroke-width="3"/><g fill="#fbf3e4"><ellipse cx="50" cy="45" rx="7" ry="6"/><circle cx="41" cy="36" r="3.4"/><circle cx="47" cy="31.5" r="3.4"/><circle cx="53" cy="31.5" r="3.4"/><circle cx="59" cy="36" r="3.4"/></g></svg>`}
 function trophySVG(L,big){const t=trophyOf(L);return `<svg ${big?'class="badge" ':''}viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#2c2350"/><circle cx="50" cy="50" r="47" fill="none" stroke="${t.c}" stroke-width="3" stroke-dasharray="5 5"/>
@@ -1474,7 +1490,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v22';let shown=false;
+  const BUILD='mb-water-v23';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
