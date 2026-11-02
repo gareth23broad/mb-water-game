@@ -164,8 +164,8 @@ body{
 .g-dog img.dig{animation:gDig .35s ease 2} @keyframes gDig{50%{transform:translateY(6px) rotate(-8deg)}}
 .g-dog p{margin:0;background:#fffbe9;color:#3b2a14;border-radius:16px;padding:10px 12px;font-size:14px;line-height:1.35;position:relative;flex:1;min-width:0}
 .g-pieces{display:flex;gap:10px;align-items:center;font-size:13px;color:#cfe6c4} .g-pieces i{width:30px;height:38px;display:inline-block;opacity:.25;filter:grayscale(1)} .g-pieces i.got{opacity:1;filter:none}
-.g-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:400px}
-.g-cell{aspect-ratio:1;border:0;border-radius:14px;cursor:pointer;padding:0;display:grid;place-items:center;font:inherit;font-weight:800;font-size:12px;color:#fff;
+.g-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%;max-width:400px}
+.g-cell{aspect-ratio:1;border:0;border-radius:11px;cursor:pointer;padding:0;display:grid;place-items:center;font:inherit;font-weight:800;font-size:12px;color:#fff;
   background:radial-gradient(circle at 30% 30%,#7fb35a,#4f8a37);box-shadow:inset 0 -5px 0 #3b6d29,0 2px 0 #16240f;position:relative;overflow:hidden}
 .g-cell::after{content:"";position:absolute;inset:26%;background:var(--paw) center/contain no-repeat;opacity:.22}
 .g-cell.dug{cursor:default;background:radial-gradient(circle at 50% 45%,#5a3b22,#7a5232 70%);box-shadow:inset 0 4px 8px #0006}
@@ -176,6 +176,29 @@ body{
 .g-wallet{display:flex;justify-content:center;gap:28px;width:100%;font-weight:900;font-size:38px;line-height:1}
 .g-wallet div{display:flex;align-items:center;gap:4px} .g-wallet .coin{width:38px;height:38px;margin-right:6px} .g-wallet .bag{width:28px;height:40px;margin-right:6px}
 .g-wallet b{color:var(--gold)} .g-wallet div+div b{color:#8fd3ff}
+.bw{position:relative;display:flex;justify-content:center;align-items:flex-end;margin:-6px 0 4px}
+.bw img{width:min(62vw,230px);height:auto} .bw-bottle{position:absolute;right:4%;bottom:0;width:70px;height:88px;animation:gPop .6s ease both .2s} .bw-bottle svg{width:100%;height:100%;filter:drop-shadow(0 0 12px #8fd3ffaa)}
+.bw-total{display:flex;justify-content:center;align-items:center;gap:6px;font-size:30px;font-weight:900;color:#8fd3ff;margin:4px 0 12px} .bw-total .bag{width:24px;height:34px}
+ #fx{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+#fx .dirt{position:absolute;width:9px;height:7px;border-radius:50% 40% 55% 45%;background:#6b4423;box-shadow:inset -2px -2px 0 #4a2d16}
+#fx .dirt:nth-child(3n){background:#8a5a33;width:6px;height:6px} #fx .dirt:nth-child(4n){background:#7fb35a;width:5px;height:9px;border-radius:50% 50% 0 50%}
+#fx .spark{position:absolute;color:#ffe27a;font-size:18px;text-shadow:0 0 8px #ffd257}
+#fx .ftext{position:absolute;font-weight:900;font-size:26px;white-space:nowrap;color:#fff;text-shadow:0 2px 0 #0008,0 0 12px #000a;display:flex;align-items:center;gap:4px}
+#fx .ftext.gold{color:#ffd257} #fx .ftext .coin{width:24px;height:24px}
+#fx .fly{position:absolute;width:30px;height:30px;display:grid;place-items:center} #fx .fly .coin{width:24px;height:24px;margin:0} #fx .fly svg{width:30px;height:38px}
+#fx .fly.big{width:80px;height:100px} #fx .fly.big svg{width:80px;height:100px;filter:drop-shadow(0 0 16px #8fd3ff)}
+#fx .conf{position:absolute;width:8px;height:12px;border-radius:2px}
+@keyframes gBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px) rotate(-1.5deg)}}
+.g-dog img{animation:gBob 2.6s ease-in-out infinite}
+@keyframes gBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.g-cell:not(.dug){animation:gBreathe 3.2s ease-in-out infinite;transition:transform .12s}
+.g-cell:not(.dug):nth-child(2n){animation-delay:-.8s} .g-cell:not(.dug):nth-child(3n){animation-delay:-1.6s} .g-cell:not(.dug):nth-child(5n){animation-delay:-2.3s}
+.g-cell:not(.dug):active{transform:scale(.92)}
+.g-cell.pop img,.g-cell.pop svg{animation:gRise .55s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes gRise{0%{transform:translateY(45%) scale(.2);opacity:0}100%{transform:none;opacity:1}}
+.g-pieces i.got{animation:gGlow 2s ease-in-out infinite} @keyframes gGlow{0%,100%{filter:drop-shadow(0 0 0 #8fd3ff)}50%{filter:drop-shadow(0 0 6px #8fd3ff)}}
+.g-buy{animation:gNudge 3s ease-in-out infinite} @keyframes gNudge{0%,88%,100%{transform:scale(1)}94%{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.g-dog img,.g-cell,.g-buy,.g-pieces i.got{animation:none!important}}
 .g-buy{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;line-height:1.1}
 .g-buy span{font-size:15px} .g-buy b{font-size:26px;display:flex;align-items:center} .g-buy .coin{width:24px;height:24px}
 #album,#puz{position:fixed; inset:0; z-index:15; background:var(--night); display:flex; flex-direction:column}
@@ -1691,7 +1714,7 @@ $('#saveBtn').onclick=openSave;
 /*MENU*/
 /* ===== Main menu ===== */
 const svgURL=x=>'data:image/svg+xml,'+encodeURIComponent(x);
-const PIECE_SVG=k=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50"><path d="M14 4h12v8l6 6v26q0 4-4 4H12q-4 0-4-4V18l6-6z" fill="#cfeaff55" stroke="#bfe3ff" stroke-width="2"/>${k===0?'<rect x="13" y="2" width="14" height="6" rx="2" fill="#c08a4a"/><path d="M14 12h12" stroke="#fff" stroke-width="2"/>':k===1?'<path d="M9 24h22v8H9z" fill="#8fd3ff"/>':'<path d="M9 32h22v12q0 3-3 3H12q-3 0-3-3z" fill="#4a8fd8"/>'}</svg>`;
+const PIECE_SVG=k=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50"><path d="M14 4h12v8l6 6v26q0 4-4 4H12q-4 0-4-4V18l6-6z" fill="#cfeaff55" stroke="#bfe3ff" stroke-width="2"/>${k===3?'<rect x="13" y="2" width="14" height="6" rx="2" fill="#c08a4a"/><path d="M9 24h22v8H9z" fill="#8fd3ff"/><path d="M9 32h22v12q0 3-3 3H12q-3 0-3-3z" fill="#4a8fd8"/>':k===0?'<rect x="13" y="2" width="14" height="6" rx="2" fill="#c08a4a"/><path d="M14 12h12" stroke="#fff" stroke-width="2"/>':k===1?'<path d="M9 24h22v8H9z" fill="#8fd3ff"/>':'<path d="M9 32h22v12q0 3-3 3H12q-3 0-3-3z" fill="#4a8fd8"/>'}</svg>`;
 function openMenu(){const m=$('#menu');if(!$('#menuLogo').src)$('#menuLogo').src=ART.logo;$('#mDigImg').src=ART.peek;
   $('#mCoins').textContent=fmtC(S.coins);$('#mBag').textContent=S.bag;$('#mBagW').textContent=S.bag==1?'bottle':'bottles';
   $('#mPlay').innerHTML=`Play<small>Level ${S.level}</small>`;
@@ -1704,22 +1727,29 @@ $('#mAlbum').onclick=()=>{$('#menu').hidden=true;openAlbum()};
 $('#mMap').onclick=()=>{$('#menu').hidden=true;openMap()};
 
 /* ===== Moto's Garden ===== */
-// 4x4 patch: one spare bottle in 3 pieces, a small treasure chest of coins, the golden key (+3 digs), cat toys and dirt.
-function newGarden(){const n=16,cells=Array(n).fill('.');const free=[...Array(n).keys()];
+// 6x6 patch: one spare bottle in 3 pieces, two small treasure chests of gold, the golden key (+3 digs), cat toys and dirt.
+function newGarden(){const n=36,cells=Array(n).fill('.');const free=[...Array(n).keys()];
   const take=()=>free.splice(Math.floor(Math.random()*free.length),1)[0];
   for(let k=0;k<3;k++)cells[take()]='p'+k;
-  for(let k=0;k<1;k++)cells[take()]='c'+(15+Math.floor(Math.random()*26));
-  cells[take()]='g';for(let k=0;k<4;k++)cells[take()]='t'+Math.floor(Math.random()*TOYS.length);
+  for(let k=0;k<2;k++)cells[take()]='c'+(15+Math.floor(Math.random()*26));
+  cells[take()]='g';for(let k=0;k<7;k++)cells[take()]='t'+Math.floor(Math.random()*TOYS.length);
   return{cells,dug:Array(n).fill(0),got:0}}
 const TOYS=[['g_yarn','an old ball of yarn'],['g_fish','a fishy snack (no bottle though)'],['g_mouse','a squeaky toy mouse'],['g_bell','a lost jingle bell']];
 const itemImg=c=>{const src=c[0]==='c'?ART.chestOpen:c==='g'?ART.keyArt:c[0]==='t'?ART[TOYS[+c[1]][0]]:null;return src?`<img src="${src}" alt=""${c[0]==='t'?' class="toy"':''}>`:''};
+function bottleWonCard(){Snd.play('win');const c=$('#card');
+  c.innerHTML=`<div class="bw"><img src="${ART.cheer}" alt=""><div class="bw-bottle">${PIECE_SVG(3)}</div></div>
+  <h2>You won a spare bottle!</h2>
+  <p>Use it in the game when you get stuck: tap <b>Bottle</b> at the bottom of the screen.</p>
+  <div class="bw-total"><i class="bag"></i>${S.bag} spare bottle${S.bag==1?'':'s'}</div>
+  <div class="row"><button class="btn ghost" id="bwDig">Keep digging</button><button class="btn" id="bwPlay">Play now</button></div>`;
+  $('#ov').hidden=false;$('#bwDig').onclick=hideCard;$('#bwPlay').onclick=()=>{hideCard();$('#garden').hidden=true;closeMenu()}}
 function gMsg(t){$('#gMsg').textContent=t}
-function openGarden(){if(!S.garden)S.garden=newGarden();$('#gDog').src=S.digs?ART.peek:ART['cat-thinking'];renderGarden();
+function openGarden(){if(!S.garden)S.garden=newGarden();$('#gDog').src=S.digs?ART.peek:ART['cat-thinking'];renderGarden();cascadeGrid();
   gMsg(S.digs?'Mrrow! Tap a patch and I\'ll dig. Three bottle pieces are hiding somewhere!':'Out of digs! Win levels to earn more, or buy some below.');$('#garden').hidden=false}
 function closeGarden(){$('#garden').hidden=true;save();openMenu()}
 $('#gClose').onclick=closeGarden;
 $('#gBuy').onclick=()=>{if(S.coins<120){gMsg(`5 digs cost 120 gold and you have ${S.coins}. Win a few levels and come back!`);return}
-  S.coins-=120;S.digs+=5;save();renderGarden();Snd.play('golden');$('#gDog').src=ART.peek;gMsg('Five more digs! Let\'s find that bottle.')};
+  const oc=S.coins;S.coins-=120;S.digs+=5;save();renderGarden();countUp($('#gCoins'),oc,S.coins,600);floatText($('#gBuy').getBoundingClientRect(),'+5 digs','gold');bump($('#gDigs'));Snd.play('golden');$('#gDog').src=ART.peek;gMsg('Five more digs! Let\'s find that bottle.')};
 function renderGarden(){const g=S.garden,G=$('#gGrid');G.style.setProperty('--paw',`url("${ART.g_paw}")`);
   $('#gSub').textContent='';$('#gCoins').textContent=fmtC(S.coins);$('#gBag').textContent=S.bag;
   $('#gDigs').innerHTML=`<b>${S.digs}</b> dig${S.digs==1?'':'s'} left`;
@@ -1727,18 +1757,61 @@ function renderGarden(){const g=S.garden,G=$('#gGrid');G.style.setProperty('--pa
   G.innerHTML='';g.cells.forEach((c,i)=>{const b=document.createElement('button');b.className='g-cell'+(g.dug[i]?' dug':'');b.setAttribute('aria-label',g.dug[i]?'Dug':'Patch of grass');
     if(g.dug[i]){if(c[0]==='p')b.innerHTML=PIECE_SVG(+c[1]);else b.innerHTML=itemImg(c);}
     else b.onclick=()=>digAt(i);G.append(b)})}
-function digAt(i){const g=S.garden;if(g.dug[i]||$('#garden').hidden)return;
-  if(S.digs<=0){gMsg('Out of digs! Win a level for a free dig, or buy 5 for 120 gold.');Snd.play('invalid');return}
-  S.digs--;g.dug[i]=1;const c=g.cells[i];const dog=$('#gDog');dog.classList.remove('dig');void dog.offsetWidth;dog.classList.add('dig');
-  let msg;
-  if(c[0]==='p'){g.got++;Snd.play('wake');dog.src=ART.cheer;setTimeout(()=>dog.src=ART.peek,1800);msg=g.got<3?`Mrrow! A bottle piece! ${3-g.got} more to go.`:'All three pieces! Bemo glued the bottle back together. It\'s in your bag!'}
-  else if(c[0]==='c'){const a=+c.slice(1);S.coins+=a;Snd.play('golden');msg=`A tiny treasure chest! +${a} gold.`}
-  else if(c==='g'){S.digs+=3;Snd.play('golden');msg='The golden key! It unlocks 3 extra digs.'}
-  else{Snd.play('select');msg=c[0]==='t'?`Just ${TOYS[+c[1]][1]}. Keep digging!`:'Only dirt. Try another patch!'}
+/* --- garden animation helpers (all skipped for reduced motion) --- */
+let gBusy=false;
+function fxLayer(){let L=$('#fx');if(!L){L=document.createElement('div');L.id='fx';document.body.append(L)}return L}
+const ctr=r=>[r.left+r.width/2,r.top+r.height/2];
+function burst(r,kind,n){if(reduce)return;const L=fxLayer(),[cx,cy]=ctr(r);
+  for(let k=0;k<n;k++){const d=document.createElement('i');d.className=kind;if(kind==='spark')d.textContent='✦';
+    d.style.left=cx+'px';d.style.top=cy+'px';L.append(d);
+    const a=-Math.PI*(.1+.8*Math.random()),v=30+Math.random()*(kind==='spark'?60:45),dx=Math.cos(a)*v*(Math.random()<.5?-1:1),up=Math.sin(a)*v;
+    d.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(calc(-50% + ${dx*.7}px),calc(-50% + ${up}px)) scale(.9)`,opacity:1,offset:.45},
+      {transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${up+(kind==='spark'?10:70)}px)) scale(.3)`,opacity:0}],{duration:550+Math.random()*250,easing:'ease-out'}).onfinish=()=>d.remove()}}
+function floatText(r,html,cls){if(reduce)return;const L=fxLayer(),[cx,cy]=ctr(r),t=document.createElement('div');t.className='ftext '+(cls||'');t.innerHTML=html;
+  t.style.left=cx+'px';t.style.top=cy+'px';L.append(t);
+  t.animate([{transform:'translate(-50%,-30%) scale(.6)',opacity:0},{transform:'translate(-50%,-80%) scale(1.15)',opacity:1,offset:.25},{transform:'translate(-50%,-190%) scale(1)',opacity:0}],{duration:1300,easing:'ease-out'}).onfinish=()=>t.remove()}
+function flyTo(r,target,html,n,delay){if(reduce||!target)return;const L=fxLayer(),[x0,y0]=ctr(r),[x1,y1]=ctr(target.getBoundingClientRect());
+  for(let k=0;k<n;k++){const f=document.createElement('div');f.className='fly';f.innerHTML=html;f.style.left=x0+'px';f.style.top=y0+'px';L.append(f);
+    const mx=(x0+x1)/2+(Math.random()-.5)*80,my=Math.min(y0,y1)-60-Math.random()*40;
+    f.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:0},{transform:`translate(calc(-50% + ${mx-x0}px),calc(-50% + ${my-y0}px)) scale(1.1)`,opacity:1,offset:.45},
+      {transform:`translate(calc(-50% + ${x1-x0}px),calc(-50% + ${y1-y0}px)) scale(.6)`,opacity:.9}],{duration:750,delay:(delay||0)+k*90,easing:'cubic-bezier(.4,0,.3,1)',fill:'backwards'})
+      .onfinish=()=>{f.remove();bump(target)}}}
+function bump(el){if(!el||reduce)return;el.animate([{transform:'scale(1)'},{transform:'scale(1.3)'},{transform:'scale(1)'}],{duration:320,easing:'ease-out'})}
+function countUp(el,a,b,ms){if(!el)return;if(reduce||a===b){el.textContent=fmtC(b);return}const t0=performance.now();
+  (function f(){const p=Math.min(1,(performance.now()-t0)/ms);el.textContent=fmtC(Math.round(a+(b-a)*(1-Math.pow(1-p,3))));if(p<1)requestAnimationFrame(f)})()}
+function confetti(){if(reduce)return;const L=fxLayer(),cols=['#ffd257','#8fd3ff','#ff8fb1','#9fd06f','#c9a7ff'];
+  for(let k=0;k<70;k++){const c=document.createElement('i');c.className='conf';c.style.background=cols[k%5];c.style.left=(Math.random()*100)+'vw';c.style.top='-12px';L.append(c);
+    const dx=(Math.random()-.5)*160,rot=360+Math.random()*720;
+    c.animate([{transform:'translateY(0) rotate(0)'},{transform:`translate(${dx}px,${innerHeight+40}px) rotate(${rot}deg)`}],{duration:1800+Math.random()*1400,delay:Math.random()*500,easing:'cubic-bezier(.2,.5,.5,1)',fill:'backwards'}).onfinish=()=>c.remove()}}
+function cascadeGrid(){if(reduce)return;[...$('#gGrid').children].forEach((el,k)=>el.animate([{transform:'scale(.3) translateY(30px)',opacity:0},{transform:'scale(1.06)',opacity:1,offset:.7},{transform:'scale(1)',opacity:1}],
+  {duration:420,delay:(k%6)*35+Math.floor(k/6)*60,easing:'ease-out',fill:'backwards'}))}
+function digAt(i){const g=S.garden;if(gBusy||g.dug[i]||$('#garden').hidden)return;
+  const tile=$('#gGrid').children[i];
+  if(S.digs<=0){gMsg('Out of digs! Win a level for a free dig, or buy 5 for 120 gold.');Snd.play('invalid');if(tile&&!reduce)tile.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:240});bump($('#gBuy'));return}
+  const dog=$('#gDog');dog.classList.remove('dig');void dog.offsetWidth;dog.classList.add('dig');
+  const r=tile.getBoundingClientRect();
+  // phase 1: the patch wobbles and dirt flies
+  gBusy=true;if(!reduce)tile.animate([{transform:'rotate(0)'},{transform:'rotate(-6deg) scale(.95)'},{transform:'rotate(6deg) scale(.95)'},{transform:'rotate(-3deg)'},{transform:'rotate(0)'}],{duration:260});
+  burst(r,'dirt',14);Snd.play('select');
+  setTimeout(()=>{gBusy=false;revealAt(i,r,dog)},reduce?0:240)}
+function revealAt(i,r,dog){setTimeout(()=>dog.classList.remove('dig'),720);const g=S.garden;
+  const oldCoins=S.coins;S.digs--;g.dug[i]=1;const c=g.cells[i];
+  let msg,after=null;
+  if(c[0]==='p'){g.got++;Snd.play('wake');dog.src=ART.cheer;setTimeout(()=>dog.src=ART.peek,1800);msg=g.got<3?`Mrrow! A bottle piece! ${3-g.got} more to go.`:'All three pieces! Bemo glued the bottle back together. It\'s in your bag!';
+    const k=+c[1];after=()=>{burst(r,'spark',10);const slot=$('#gPieces').children[k];flyTo(r,slot,PIECE_SVG(k),1,150)}}
+  else if(c[0]==='c'){const a=+c.slice(1);S.coins+=a;Snd.play('golden');msg=`A tiny treasure chest! +${a} gold.`;
+    after=()=>{burst(r,'spark',8);floatText(r,`+${a} <i class="coin"></i>`,'gold');flyTo(r,$('#gCoins'),'<i class="coin"></i>',5,200);setTimeout(()=>countUp($('#gCoins'),oldCoins,S.coins,700),650)}}
+  else if(c==='g'){S.digs+=3;Snd.play('golden');msg='The golden key! It unlocks 3 extra digs.';
+    after=()=>{burst(r,'spark',14);floatText(r,'+3 digs','gold');setTimeout(()=>bump($('#gDigs')),500)}}
+  else{msg=c[0]==='t'?`Just ${TOYS[+c[1]][1]}. Keep digging!`:'Only dirt. Try another patch!'}
   if(S.digs<=0&&g.got<3)setTimeout(()=>{if(!$('#garden').hidden)dog.src=ART['cat-thinking']},900);
-  if(g.got>=3){S.bag++;S.garden=newGarden();save();renderGarden();setTimeout(()=>{if(!$('#garden').hidden)gMsg('A fresh patch to dig. Bottles in your bag can be used in any level.')},2600)}
-  else{save();renderGarden()}
-  const cell=$('#gGrid').children[i];if(cell&&g.got<3)cell.classList.add('pop');gMsg(msg)}
+  if(g.got>=3){gBusy=true;save();renderGarden();const cell=$('#gGrid').children[i];if(cell)cell.classList.add('pop');after&&after();gMsg(msg);
+    S.bag++;S.garden=newGarden();save();
+    setTimeout(()=>{if(!reduce){const L=fxLayer(),glow=document.createElement('div');glow.className='fly big';glow.innerHTML=PIECE_SVG(3);const [x,y]=ctr($('#gPieces').getBoundingClientRect());glow.style.left=x+'px';glow.style.top=y+'px';L.append(glow);
+        glow.animate([{transform:'translate(-50%,-50%) scale(.5)',opacity:0},{transform:'translate(-50%,-50%) scale(1.6) rotate(-8deg)',opacity:1,offset:.5},{transform:'translate(-50%,-50%) scale(1.3)',opacity:0}],{duration:900}).onfinish=()=>glow.remove()}},800);
+    setTimeout(()=>{renderGarden();cascadeGrid();gMsg('A fresh patch to dig! Three more pieces are hiding.');bottleWonCard();confetti();bump($('#gBag'));gBusy=false},1500);return}
+  const keepCoins=c[0]==='c';save();renderGarden();if(keepCoins&&!reduce)$('#gCoins').textContent=fmtC(oldCoins);
+  const cell=$('#gGrid').children[i];if(cell)cell.classList.add('pop');after&&after();gMsg(msg)}
 
 $('#homeBtn').onclick=()=>{if(!S.busy)openMenu()};$('#albClose').onclick=closeAlbum;
 $('#puzCv').addEventListener('pointerdown',puzTap);$('#puzUndo').onclick=puzUndo;$('#puzSolve').onclick=askSolve;$('#puzPeek').onclick=()=>{PZ.peek=performance.now()+1500};
@@ -1772,7 +1845,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v37';let shown=false;
+  const BUILD='mb-water-v39';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
