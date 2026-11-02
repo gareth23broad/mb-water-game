@@ -139,6 +139,43 @@ body{
 .code-in input:focus{outline:none; border-color:var(--gold)} .code-in button{border:0; border-radius:12px; padding:0 14px; font:inherit; font-weight:800; background:var(--panel-2); color:var(--cream); cursor:pointer}
 .code-msg{min-height:20px; font-size:14px; color:var(--muted); margin:0 0 10px}
 .rule{cursor:pointer}
+/* ---- coins, menu, Moto's Garden ---- */
+.coin{display:inline-block;width:1em;height:1em;border-radius:50%;vertical-align:-.15em;margin-right:4px;background:radial-gradient(circle at 35% 30%,#fff6c4 0 18%,#ffd257 19% 60%,#d99a1e 61%);box-shadow:inset 0 0 0 2px #b97c12}
+.bag{display:inline-block;width:.8em;height:1.05em;vertical-align:-.2em;margin-right:5px;border-radius:30% 30% 40% 40%/20% 20% 50% 50%;background:linear-gradient(#8fd3ff,#4a8fd8);box-shadow:inset 0 0 0 2px #2b5f9e}
+#homeBtn span{font-weight:800}
+#addN.buy{background:var(--gold);color:#2a1d00}
+.prize{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;background:var(--panel-2);border-radius:14px;padding:10px 14px;margin:6px 0 10px;font-weight:800;font-size:17px}
+.prize b{color:var(--gold)} .prize small{width:100%;text-align:center;font-weight:600;font-size:12px;color:var(--muted)}
+#menu,#garden{position:fixed;inset:0;z-index:16;background:var(--night);display:flex;flex-direction:column;overflow:auto}
+#menu{background:radial-gradient(120% 80% at 50% 0%,var(--night-2),var(--night))}
+.menu-wrap,.g-wrap{box-sizing:border-box}
+.menu-wrap{margin:auto;width:100%;max-width:440px;display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:calc(20px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+#menuLogo{width:min(100%,380px);align-self:center;height:auto}
+.wallet{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:15px;color:var(--muted)} .wallet b{color:var(--cream);font-size:18px}
+.btn.big{font-size:22px;padding:18px 20px;border-radius:20px}
+.btn.big small{display:block;font-size:13px;font-weight:700;opacity:.75}
+.mcard{position:relative;display:flex;align-items:center;gap:14px;text-align:left;border:0;border-radius:20px;padding:12px 16px;background:linear-gradient(135deg,#3f6b3a,#2c4a2a);color:var(--cream);font:inherit;cursor:pointer;box-shadow:0 4px 0 #1b2e1a}
+.mcard img{width:64px;height:64px} .mcard b{font-family:var(--display);font-size:21px;display:block} .mcard small{color:#cfe6c4;font-size:13px}
+.mcard em,.mrow em{position:absolute;top:-6px;right:-6px;background:#e5484d;color:#fff;font-style:normal;font-weight:800;font-size:13px;border-radius:12px;padding:2px 8px}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:12px} .mrow .btn{position:relative}
+#garden{background:linear-gradient(#2a3d27,#1f2d1d)}
+.g-wrap{margin:0 auto;width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.g-dog{display:flex;align-items:center;gap:12px;width:100%} .g-dog img{width:84px;height:84px;flex:none;transition:transform .2s}
+.g-dog img.dig{animation:gDig .35s ease 2} @keyframes gDig{50%{transform:translateY(6px) rotate(-8deg)}}
+.g-dog p{margin:0;background:#fffbe9;color:#3b2a14;border-radius:16px;padding:10px 12px;font-size:14px;line-height:1.35;position:relative;flex:1;min-width:0}
+.g-pieces{display:flex;gap:10px;align-items:center;font-size:13px;color:#cfe6c4} .g-pieces i{width:30px;height:38px;display:inline-block;opacity:.25;filter:grayscale(1)} .g-pieces i.got{opacity:1;filter:none}
+.g-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;max-width:400px}
+.g-cell{aspect-ratio:1;border:0;border-radius:14px;cursor:pointer;padding:0;display:grid;place-items:center;font:inherit;font-weight:800;font-size:12px;color:#fff;
+  background:radial-gradient(circle at 30% 30%,#7fb35a,#4f8a37);box-shadow:inset 0 -5px 0 #3b6d29,0 2px 0 #16240f;position:relative;overflow:hidden}
+.g-cell::after{content:"";position:absolute;inset:26%;background:var(--paw) center/contain no-repeat;opacity:.22}
+.g-cell.dug{cursor:default;background:radial-gradient(circle at 50% 45%,#5a3b22,#7a5232 70%);box-shadow:inset 0 4px 8px #0006}
+.g-cell.dug::after{display:none} .g-cell svg,.g-cell img{width:74%;height:74%;object-fit:contain}
+.g-dog img{object-fit:contain} .mcard img{object-fit:contain}
+.g-cell.pop{animation:gPop .45s ease} @keyframes gPop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.pp{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 3px 0 8px;vertical-align:-1px}
+.pp.hot{background:#ff6a3d}.pp.warm{background:#ffc247}.pp.cold{background:#7cc6ff}
+.g-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:400px;font-weight:800}
+.g-key{font-size:12px;color:#cfe6c4;margin:0;text-align:center}
 #album,#puz{position:fixed; inset:0; z-index:15; background:var(--night); display:flex; flex-direction:column}
 .alb-note{text-align:center; color:var(--muted); font-size:14px; margin:14px 16px 4px}
 .alb-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; padding:12px max(16px,env(safe-area-inset-right,0px)) 30px max(16px,env(safe-area-inset-left,0px)); max-width:760px; margin:0 auto}
@@ -232,7 +269,7 @@ button:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-r
   <div class="rule" id="rule" role="button" tabindex="0" aria-label="How this level works"></div>
   <div id="stage"><canvas id="cv" aria-label="Game board. Tap a bottle, then tap where to pour."></canvas><div id="toast" role="status"></div></div>
   <nav class="tools">
-    <button class="tool" id="albumBtn"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg></i>Album<em id="albNew" hidden>new</em></button>
+    <button class="tool" id="homeBtn"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></i><span id="homeCoins">0</span><em id="albNew" hidden>new</em></button>
     <button class="tool" id="undo"><i><img data-art="b_undo" alt=""></i>Undo</button>
     <button class="tool" id="hint"><i><img data-art="b_hint-paw" alt=""></i>Hint</button>
     <button class="tool" id="add"><i><img data-art="b_add-bottle" alt=""></i>Bottle<em id="addN">1</em></button>
@@ -253,6 +290,25 @@ button:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-r
     <div class="puz-bar" id="puzBar"><button class="btn ghost" id="puzUndo">Undo</button><button class="btn ghost" id="puzPeek">Peek</button><button class="btn ghost" id="puzSolve">Solve</button></div>
     <span class="puz-moves" id="puzMoves">0 moves</span>
     <button class="btn" id="puzNext" hidden></button>
+  </div>
+</div>
+<div id="menu" hidden>
+  <div class="menu-wrap">
+    <img id="menuLogo" alt="Moto &amp; Bemo: Tails of Color">
+    <div class="wallet"><span><i class="coin"></i><b id="mCoins">0</b> coins</span><span><i class="bag"></i><b id="mBag">0</b> <span id="mBagW">spare bottles</span></span></div>
+    <button class="btn big" id="mPlay">Play</button>
+    <button class="mcard" id="mDig"><img id="mDigImg" alt=""><div><b>Moto's Garden</b><small id="mDigSub">Dig up spare bottles</small></div><em id="mDigN" hidden></em></button>
+    <div class="mrow"><button class="btn ghost" id="mAlbum">Album<em id="mAlbNew" hidden>new</em></button><button class="btn ghost" id="mMap">Map</button></div>
+  </div>
+</div>
+<div id="garden" hidden>
+  <div class="map-top"><div><h2>Moto's Garden</h2><span id="gSub"></span></div><button class="icon-btn" id="gClose" aria-label="Close garden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="g-wrap">
+    <div class="g-dog"><img id="gDog" alt="Moto"><p id="gMsg"></p></div>
+    <div class="g-pieces" id="gPieces"></div>
+    <div class="g-grid" id="gGrid"></div>
+    <div class="g-bar"><span id="gDigs"></span><button class="btn ghost" id="gBuy">5 digs for 120</button></div>
+    <p class="g-key"><span class="pp hot"></span>Hot <span class="pp warm"></span>Warm <span class="pp cold"></span>Cold: how close the nearest bottle piece is</p>
   </div>
 </div>
 <div id="ov" hidden><div class="card" id="card"></div></div>
@@ -279,18 +335,20 @@ const COLORS=[
  {name:'Gold',hex:'#f2b01e',g:'crown',gold:true}
 ];
 // Long bottle: one colour (LONGCOL) has LONGCAP layers instead of four, and is only finished when it fills the long bottle
-let LONGCOL=-1,LONGCAP=0;
-function setLongFrom(meta){const x=meta.find(q=>q.long);LONGCOL=x?x.lc:-1;LONGCAP=x?x.cap:0}
+let LONGCOL=-1,LONGCAP=0,CAP_NOW=4;
+function setLongFrom(meta,cap){if(cap)CAP_NOW=cap;const x=meta.find(q=>q.long);LONGCOL=x?x.lc:-1;LONGCAP=x?x.cap:0}
 function isFullMono(b,cap){if(!b.length||b.length!==(b[0]===LONGCOL?LONGCAP:cap))return false;for(let k=1;k<b.length;k++)if(b[k]!==b[0])return false;return true}
 function countDone(bs,cap){let n=0;for(const b of bs)if(isFullMono(b,cap))n++;return n}
 function colourDone(bs,cap,c){for(const b of bs)if(b[0]===c&&isFullMono(b,cap))return true;return false}
 const capOf=(meta,cap,j)=>meta[j].cap||cap;
 // why a bottle can't take part right now ('' = free). moves = moves made so far.
 // Treasure chest: its bottles stay locked until the bottle with the key is emptied, then the chest opens for good
-function afterMove(bs,meta,src){const k=meta.findIndex(m=>m.key);if(k>=0&&!bs[k].length)meta=meta.map(m=>m.chest||m.key?{...m,chest:0,key:0}:m);
+function afterMove(bs,meta,src,dst){const k=meta.findIndex(m=>m.key);if(k>=0&&!bs[k].length)meta=meta.map(m=>m.chest||m.key?{...m,chest:0,key:0}:m);
   // Wandering Bemo: after every pour she hops onto the bottle you just poured from
   // she makes three hops, then wanders off the board (curtain = hops left + 1)
   if(src!=null){const w=meta.findIndex(m=>m.curtain);if(w>=0&&w!==src){const left=meta[w].curtain-1;meta=meta.map((m,q)=>q===w?{...m,curtain:0}:q===src&&left>0?{...m,curtain:left}:m)}}
+  // Rock: every pour into or out of its partner bottle chips it (3 chips and it shatters)
+  if(src!=null&&meta.some(m=>m.rock>=0&&m.rhp>0&&(m.rock===src||m.rock===dst)))meta=meta.map(m=>m.rock>=0&&m.rhp>0&&(m.rock===src||m.rock===dst)?{...m,rhp:m.rhp-1}:m);
   return meta}
 // Ribbon twins: pouring into one twin tugs the other twin's top layer across into it too (if there is room)
 function tieTug(nb,meta,cap,i,j,mv){const t=meta[j].narrow;if(!t)return -1;const k=t-1;
@@ -300,7 +358,7 @@ function curtained(){return false}
 function blocked(bs,meta,cap,i,moves){const m=meta[i];
   if(m.chest)return 'chest';
   if(m.curtain)return 'bemo';
-  if(m.rock>=0&&!isFullMono(bs[m.rock],cap))return 'rock';   // rock cracks open once the bottle next to it is finished
+  if(m.rock>=0&&m.rhp>0&&!isFullMono(bs[m.rock],cap))return 'rock';   // rock cracks open once the bottle next to it is finished
   if(m.lock>countDone(bs,cap))return 'nap';
   if(m.bell>=0&&!colourDone(bs,cap,m.bell))return 'bell';
   if(m.frozen>moves)return 'frozen';
@@ -329,7 +387,7 @@ function solve(bs0,meta,cap,limit,moves0){
   function dfs(bs,mv,meta){
     if(isSolved(bs,cap))return true;
     if(++nodes>limit)throw 0;
-    const key=bs.map(b=>String.fromCharCode(...b.map(v=>65+v))).join('|')+(maxF?'#'+Math.min(mv,maxF):'')+(hasKey&&!meta.some(m=>m.key)?'!':'')+'@'+meta.map(m=>m.curtain||'').join('');
+    const key=bs.map(b=>String.fromCharCode(...b.map(v=>65+v))).join('|')+(maxF?'#'+Math.min(mv,maxF):'')+(hasKey&&!meta.some(m=>m.key)?'!':'')+'@'+meta.map(m=>m.rhp||'').join('');
     if(seen.has(key))return false;seen.add(key);
     const cand=[];
     for(let i=0;i<n;i++){const a=bs[i];if(!a.length)continue;
@@ -344,7 +402,7 @@ function solve(bs0,meta,cap,limit,moves0){
       if(!bs[j].length&&plain(meta[j])){if(triedEmpty.has(i))continue;triedEmpty.add(i)}
       const nb=bs.slice();const c=bs[i][bs[i].length-1];
       nb[i]=bs[i].slice(0,bs[i].length-amt);nb[j]=bs[j].concat(Array(amt).fill(c));tieTug(nb,meta,cap,i,j,mv);
-      path.push([i,j]);if(dfs(nb,mv+1,afterMove(nb,meta,i)))return true;path.pop();
+      path.push([i,j]);if(dfs(nb,mv+1,afterMove(nb,meta,i,j)))return true;path.pop();
     }
     return false;
   }
@@ -391,7 +449,7 @@ function levelCfg(L,st){const sup=superType(L);if(sup)return superCfg(L,sup,st||
 }
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function shuffle(arr,r){for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
-const M0=()=>({hide:0,long:0,collar:-1,lock:0,bell:-1,frozen:0,cap:0,narrow:0,jar:0,curtain:0,fire:-1,chest:0,key:0,rock:-1});
+const M0=()=>({rhp:0,hide:0,long:0,collar:-1,lock:0,bell:-1,frozen:0,cap:0,narrow:0,jar:0,curtain:0,fire:-1,chest:0,key:0,rock:-1});
 function makeLevel(L,v,a0,st){v=v||0;st=st||0;
   const c=levelCfg(L,st);
   // From level 30, build a few solvable layouts and keep the trickiest (more for Tricky levels). Marathons stay gentle.
@@ -435,7 +493,7 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
           bs[e]=[x];meta[e].fire=x}}
       if(c.rock){   // rock: covers a full bottle and breaks when the bottle right next to it is finished
         const opts=[];for(let i=0;i<c.colors;i++)if(plain(meta[i]))for(const t of [i-1,i+1])if(t>=0&&t<c.colors&&!meta[t].crow&&!(meta[t].rock>=0)&&!meta.some(q=>q.rock===t))opts.push([i,t]);
-        if(opts.length){const [i,t]=opts[Math.floor(r()*opts.length)];meta[i].rock=t}}
+        if(opts.length){const [i,t]=opts[Math.floor(r()*opts.length)];meta[i].rock=t;meta[i].rhp=3}}
       if(c.lazy)for(let n=0;n<two;n++){const i=freeFull();if(i>=0)meta[i].hide=c.cap-1}   // Lazy Bemo: her faces cover all but the top layer
       if(c.kitten)meta[E1].cap=2;
       if(c.jar){const e=plain(meta[E2])?E2:plain(meta[E1])?E1:-1;if(e>=0)meta[e].jar=1;else{bs.push([]);meta.push({...M0(),jar:1})}}
@@ -453,13 +511,13 @@ function makeLevel(L,v,a0,st){v=v||0;st=st||0;
 function trapLite(lv,seed){const r=mulberry(seed||1);let dead=0;
   for(let p=0;p<24;p++){let bs=lv.bs.map(b=>b.slice()),mv=0,meta=lv.meta;
     for(let d=0;d<60;d++){const ms=[];for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++){const a=canPour(bs,meta,lv.cap,i,j,mv);if(a)ms.push([i,j,a])}
-      if(!ms.length){if(!isSolved(bs,lv.cap))dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta,i);
+      if(!ms.length){if(!isSolved(bs,lv.cap))dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta,i,j);
       if(isSolved(bs,lv.cap))break}}
   return dead/24}
 function trapScore(lv,seed,P,D){P=P||24;D=D||14;const r=mulberry(seed||1);let dead=0;
   for(let p=0;p<P;p++){let bs=lv.bs.map(b=>b.slice()),mv=0,meta=lv.meta;
     for(let d=0;d<D;d++){const ms=[];for(let i=0;i<bs.length;i++)for(let j=0;j<bs.length;j++){const a=canPour(bs,meta,lv.cap,i,j,mv);if(a)ms.push([i,j,a])}
-      if(!ms.length){dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta,i);
+      if(!ms.length){dead++;break}const [i,j,a]=ms[Math.floor(r()*ms.length)];const c=bs[i][bs[i].length-1];bs[i]=bs[i].slice(0,bs[i].length-a);bs[j]=bs[j].concat(Array(a).fill(c));tieTug(bs,meta,lv.cap,i,j,mv);mv++;meta=afterMove(bs,meta,i,j);
       if(isSolved(bs,lv.cap))break;if(solve(bs,meta,lv.cap,40000,mv)===null){dead++;break}}}
   return dead/P}
 /*ENGINE-END*/
@@ -647,7 +705,7 @@ const SLEEPY=new Path2D('M3 24c0-8 7-13 17-13 3 0 6 .7 8.5 2L31 7l2.6 7.4C37 16.
 const $=s=>document.querySelector(s);
 const cv=$('#cv'),g=cv.getContext('2d');
 let DPR=1,W=0,H=0;
-const S={level:1,unlocked:1,cap:4,units:[],meta:[],hist:[],moves:0,extra:1,sel:-1,busy:false,won:false,seen:{},album:{},pending:null,albumNew:0,trophies:{},ribbons:{},stage:0,stickers:{},mapPos:0};
+const S={level:1,unlocked:1,cap:4,units:[],meta:[],hist:[],moves:0,extra:1,sel:-1,busy:false,won:false,seen:{},album:{},pending:null,albumNew:0,trophies:{},ribbons:{},stage:0,stickers:{},mapPos:0,coins:500,bag:1,digs:3,garden:null,par:0};
 let B=[];               // visual bottles
 let curW=60,tgtW=60,ratio=3.1;
 let tweens=[],stream=null,hintFx=null,now0=performance.now();
@@ -656,13 +714,13 @@ const ease={inOut:p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2,out:p=>1-Math.pow(1-p,3
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function tween(dur,fn,e,delay){dur=reduce?Math.min(dur,120):dur;return new Promise(res=>tweens.push({t0:performance.now()+(delay||0),dur,fn,e:e||ease.inOut,res}))}
 
-function load(){try{const d=JSON.parse(localStorage.getItem('mb-water-v1')||'{}');S.unlocked=d.unlocked||1;S.level=d.level||1;S.variant=d.variant||0;S.album=d.album||{};S.trophies=d.trophies||{};S.ribbons=d.ribbons||{};S.stage=d.stage||0;S.stickers=d.stickers||{};S.mapPos=d.mapPos||0;S.pending=d.pending??null;S.albumNew=d.albumNew||0;if(!d.albumInit)autoFillAlbum();Snd.muted=!!d.muted;if(d.music===false)Snd.music=false;S.seen=d.seen||{}}catch(e){}}
-function save(){try{localStorage.setItem('mb-water-v1',JSON.stringify({unlocked:S.unlocked,level:S.level,variant:S.variant||0,stage:S.stage||0,muted:Snd.muted,music:Snd.music,seen:S.seen,album:S.album,pending:S.pending,albumNew:S.albumNew,albumInit:1,trophies:S.trophies,ribbons:S.ribbons,stickers:S.stickers,mapPos:S.mapPos||0}))}catch(e){}pushCloud()}
+function load(){try{const d=JSON.parse(localStorage.getItem('mb-water-v1')||'{}');S.unlocked=d.unlocked||1;S.level=d.level||1;S.variant=d.variant||0;S.album=d.album||{};S.trophies=d.trophies||{};S.ribbons=d.ribbons||{};S.stage=d.stage||0;S.stickers=d.stickers||{};S.mapPos=d.mapPos||0;S.coins=d.coins??500;S.bag=d.bag??1;S.digs=d.digs??3;S.garden=d.garden||null;S.pending=d.pending??null;S.albumNew=d.albumNew||0;if(!d.albumInit)autoFillAlbum();Snd.muted=!!d.muted;if(d.music===false)Snd.music=false;S.seen=d.seen||{}}catch(e){}}
+function save(){try{localStorage.setItem('mb-water-v1',JSON.stringify({unlocked:S.unlocked,level:S.level,variant:S.variant||0,stage:S.stage||0,muted:Snd.muted,music:Snd.music,seen:S.seen,album:S.album,pending:S.pending,albumNew:S.albumNew,albumInit:1,trophies:S.trophies,ribbons:S.ribbons,stickers:S.stickers,mapPos:S.mapPos||0,coins:S.coins,bag:S.bag,digs:S.digs,garden:S.garden}))}catch(e){}pushCloud()}
 /* Progress also syncs to the viewer's own private store on their claude.ai account, when the page can reach it. */
 let cloud=null,cloudT=null,cloudBusy=false,cloudDirty=false;
 function pushCloud(){if(!cloud)return;cloudDirty=true;clearTimeout(cloudT);cloudT=setTimeout(flushCloud,900)}
 async function flushCloud(){if(!cloud||cloudBusy||!cloudDirty)return;cloudBusy=true;cloudDirty=false;
-  try{await cloud.set({unlocked:S.unlocked,level:S.level,variant:S.variant||0,stage:S.stage||0,ribbons:S.ribbons||{},stickers:S.stickers||{},seen:S.seen,muted:Snd.muted,music:Snd.music,album:S.album,pending:S.pending,trophies:S.trophies})}catch(e){cloud=null}
+  try{await cloud.set({coins:S.coins,bag:S.bag,digs:S.digs,unlocked:S.unlocked,level:S.level,variant:S.variant||0,stage:S.stage||0,ribbons:S.ribbons||{},stickers:S.stickers||{},seen:S.seen,muted:Snd.muted,music:Snd.music,album:S.album,pending:S.pending,trophies:S.trophies})}catch(e){cloud=null}
   cloudBusy=false;if(cloudDirty)pushCloud()}
 async function cloudInit(){
   try{if(!window.claude||!window.claude.use)return;
@@ -821,6 +879,8 @@ function drawBottle(i,time){
           const vx=dir*90*k*t2,vy=(-60+r2*6)*k*t2+300*k*t2*t2,rot=(hh-.5)*4*t2;
           g.save();g.globalAlpha=1-Math.max(0,(t2-.55)/.45);g.translate(x0+W2*(c2+.5)/C+vx,y0+H2*(r2+.5)/R+vy);g.rotate(rot);
           g.drawImage(im,iw*c2/C,ih*r2/R,iw/C,ih/R,-W2/C/2-.5,-H2/R/2-.5,W2/C+1,H2/R+1);g.restore()}}}
+    if(b.rock>0.5&&!t2&&M.rhp>0){const by=y0-14*k,br=17*k;g.save();g.fillStyle='#d9d2e6';g.strokeStyle='#3a3248';g.lineWidth=2.5*k;g.beginPath();g.arc(0,by,br,0,7);g.fill();g.stroke();
+      g.fillStyle='#3a3248';g.font=`800 ${Math.round(br*1.2)}px Nunito, sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(M.rhp,0,by+1*k);g.restore()}
     if(b.rock>0.5&&!t2){g.save();g.strokeStyle='rgba(255,226,150,.9)';g.lineWidth=2.6*k;g.lineCap='round';g.lineJoin='round';const my2=y0+H2*.55;
       g.shadowColor='rgba(255,209,102,.9)';g.shadowBlur=8*k*(AN?.6+.4*Math.sin(time/350):1);
       g.beginPath();g.moveTo(-sd*14*k,my2-40*k);g.lineTo(sd*4*k,my2-14*k);g.lineTo(-sd*6*k,my2+6*k);g.lineTo(sd*20*k,my2+28*k);g.lineTo(sd*44*k,my2+30*k);g.stroke();
@@ -1008,7 +1068,7 @@ function frame(t){
 }
 
 /* ---------- Moves ---------- */
-function snapshot(){return{tags:S.tags?S.tags.map(t=>t.slice()):null,units:S.units.map(u=>u.slice()),meta:S.meta.map(m=>({...m})),extra:S.extra,moves:S.moves}}
+function snapshot(){return{tags:S.tags?S.tags.map(t=>t.slice()):null,units:S.units.map(u=>u.slice()),meta:S.meta.map(m=>({...m})),extra:S.extra,moves:S.moves,bag:S.bag,coins:S.coins}}
 async function pour(i,j){
   const amt=canPour(S.units,S.meta,S.cap,i,j,S.moves);
   if(!amt){shake(i);shake(j);Snd.play('invalid');S.sel=-1;
@@ -1054,7 +1114,8 @@ async function pour(i,j){
   {const tk=tieTug(S.units,S.meta,S.cap,i,j,S.moves-1);if(tk>=0){const tb=B[tk];tb.segs=segsOf(S.units[tk]);dst.segs=segsOf(S.units[j]);tb.wob=.9;dst.wob=Math.max(dst.wob,.8);Snd.play('select');
       if(S.tags){S.tags[tk]=S.tags[tk].slice(0,S.units[tk].length);S.tags[j]=S.tags[j].concat([''])}tugFx={a:tk,b:j,t0:performance.now()};
       if(!S.seen.tugTip){S.seen.tugTip=1;save();toast('Tug! The ribbon pulled a layer across from its twin.')}}}
-  {const was=S.meta.some(m=>m.chest);const bw=S.meta.findIndex(m=>m.curtain);S.meta=afterMove(S.units,S.meta,i);if(was&&!S.meta.some(m=>m.chest))openChest();
+  {const was=S.meta.some(m=>m.chest);const bw=S.meta.findIndex(m=>m.curtain),hp0=S.meta.map(m=>m.rhp);S.meta=afterMove(S.units,S.meta,i,j);
+   S.meta.forEach((m,q)=>{if(m.rock>=0&&m.rhp<hp0[q]&&m.rhp>0){shake(q);Snd.play('invalid');burstAt(B[q].hx,B[q].hy+curW*1.2,6)}});if(was&&!S.meta.some(m=>m.chest))openChest();
    {const nw=S.meta.findIndex(m=>m.curtain);if(bw>=0&&nw!==bw){bemoHop={from:bw,to:nw,t0:performance.now()};B[bw].wob=.6;if(nw>=0)B[nw].wob=.6;else{Snd.play('wake');toast('Bemo wandered off for a nap. All clear!')}}}}
   if(S.tags){S.tags[i]=S.tags[i].slice(0,v1);S.tags[j]=S.tags[j].concat(Array(amt).fill(''))}
   src.segs=segsOf(S.units[i]);dst.segs=segsOf(S.units[j]);
@@ -1077,7 +1138,7 @@ async function pour(i,j){
 }
 function blockText(i,why){const m=S.meta[i];
   if(why==='bemo')return 'Bemo is lounging on that one! She hops onto whichever bottle you pour from.';
-  if(why==='rock')return 'Stuck in rock! Finish the bottle next to it to crack it open.';
+  if(why==='rock'){const n=m.rhp;return `Stuck in rock! Pour into or out of the bottle the crack points to: ${n} more chip${n===1?'':'s'} and it shatters.`}
   if(why==='chest'){chestShake=performance.now()+300;return 'Locked in the chest. Empty the bottle with the golden key to open it.'}
   if(why==='nap')return 'That cat is napping. Finish any bottle to wake her.';
   if(why==='bell')return `She wakes up when ${COLORS[m.bell].name} is sorted.`;
@@ -1113,7 +1174,7 @@ const HELP={
   curtain:{title:'Wandering Bemo',short:'<b>Bemo</b> hops onto the bottle you pour from',text:'Bemo is lounging on a bottle, so you can\'t pour into it or out of it. After each pour she hops onto the bottle you just poured from. The gold dots show how many hops she has left: after three hops she wanders off for a nap.'},
   fire:{title:'Fire bottles',short:'<b>Fire</b> bottle takes only its colour, never pours',text:'This bottle is on fire! It starts with one colour inside, and nothing can be poured out of it. Fill it right up with that same colour to put the fire out.'},
   mega:{title:'Mega-tall bottles',short:'<b>Mega</b> bottles hold eight',text:'Every bottle on this board is extra tall and holds eight layers. Fewer colours, but lots of pouring!'},
-  rock:{title:'Rock bottles',short:'<b>Rock</b> breaks when the bottle beside it is done',text:'A bottle is stuck inside a rock, so you can\'t see it or use it. The cracks point to the bottle next door: finish that bottle and the rock breaks open.'},
+  rock:{title:'Rock bottles',short:'<b>Rock</b>: pour beside it to chip it away',text:'A bottle is stuck inside a rock. The crack points to its partner bottle: every pour into or out of that bottle chips the rock, and after 3 chips it shatters. If you finish the partner bottle first, the rock breaks straight away.'},
   chest:{title:'Treasure chest',short:'<b>Chest</b> opens when the key bottle is emptied',text:'A treasure chest covers a whole row of bottles. One bottle has a golden key on its bottom layer: empty that bottle and the key opens the chest for good.'},
   jar:{title:'Collection jars',short:'<b>Jar</b> takes but never gives',text:'You can pour into a collection jar, but nothing comes back out. Make sure whatever goes in belongs there.'}
 };
@@ -1131,13 +1192,14 @@ function showHelp(list){
   c.querySelector('.btn').onclick=hideCard;$('#ov').hidden=false;setTimeout(()=>c.querySelector('.btn').focus(),50)}
 function startLevel(L,fromRestart,variant,stage){
   S.level=L;S.variant=variant||0;S.stage=stage||0;const lv=makeLevel(L,S.variant,S.variant===0&&BRUTAL_A[L]||0,S.stage);
-  S.units=lv.bs;S.meta=lv.meta;S.cap=lv.cap;setLongFrom(S.meta);S.hist=[];S.moves=0;S.extra=1;S.sel=-1;S.won=false;S.busy=false;stream=null;hintFx=null;S.deadWarned=false;
+  S.units=lv.bs;S.meta=lv.meta;S.cap=lv.cap;setLongFrom(S.meta);S.hist=[];S.moves=0;S.extra=0;S.sel=-1;S.won=false;S.busy=false;stream=null;hintFx=null;S.deadWarned=false;
   S.tags=null;
   if(L%25===0){S.tags=S.units.map(u=>Array(u.length).fill(''));
     const cand=S.units.map((u,i)=>i).filter(i=>S.units[i].length>=4&&plain(S.meta[i]));
     ['MOTO','BEMO'].forEach((name,n)=>{const i=cand[n];if(i==null)return;const len=S.units[i].length;for(let q=0;q<4;q++)S.tags[i][len-1-q]=name[q]});
     setTimeout(()=>toast(L%50===0?'Golden level! A shimmering Gold colour is in the mix, and Moto and Bemo are hiding too.':'Moto and Bemo are hiding in the bottles today.'),900)}
   B=S.units.map((_,i)=>newVis(i));syncVis();layout(true);
+  {const sp=solve(S.units,S.meta,S.cap,60000,0);S.par=sp?sp.length:0}
   if(!reduce)B.forEach((b,i)=>{b.oy=-H-b.ty-200;tween(560,p=>b.oy=(-H-b.ty-200)*(1-p),ease.back,i*45).then(()=>b.wob=.7)});
   save();updateUI();
   const fresh=mechsOf().filter(k=>!S.seen[MECH_INTRO[k]]);
@@ -1145,7 +1207,11 @@ function startLevel(L,fromRestart,variant,stage){
   const kind=levelKind(L);if(kind&&!fromRestart&&!S.stage)setTimeout(()=>kindCard(kind,help),reduce?0:500);else help();
 }
 // After each move: if moves remain but none can finish the level, say so straight away
-function checkStuck(){if(S.busy||S.won||S.deadWarned)return;const sol=solve(S.units,S.meta,S.cap,90000,S.moves);if(sol===null)deadEnd()}
+function checkStuck(){if(S.busy||S.won||S.deadWarned)return;const sol=solve(S.units,S.meta,S.cap,90000,S.moves);
+  if(sol===null&&S.meta.some(m=>m.rock>=0&&m.rhp>0)){   // safety net: a rock is never allowed to be the reason a level can't be finished
+    const free=S.meta.map(m=>m.rock>=0?{...m,rhp:0}:m);if(solve(S.units,free,S.cap,300000,S.moves)!==null){S.meta=free;
+      B.forEach((b,q)=>{if(b.rock>0.5){b.rockT=performance.now();b.rock=0;burstAt(b.hx,b.hy+curW*1.5,24);b.wob=.8}});Snd.play('invalid');toast('The rock crumbled on its own!');return}}
+}
 function stepBackCount(){for(let k=S.hist.length-1;k>=0;k--){const h=S.hist[k];if(solve(h.units,h.meta,S.cap,90000,h.moves))return S.hist.length-k}return 0}
 function deadEnd(){
   S.deadWarned=true;Snd.play('stuck');B.forEach((b,i)=>{b.wob=.6;tween(380,p=>b.oy=Math.sin(p*Math.PI)*curW*.08,ease.sine,i*25)});
@@ -1158,8 +1224,9 @@ function deadEnd(){
 function outOfMoves(){
   Snd.play('stuck');B.forEach((b,i)=>{b.wob=.6;tween(380,p=>b.oy=Math.sin(p*Math.PI)*curW*.08,ease.sine,i*25)});
   setTimeout(()=>{
-    showCard('Out of moves','No more pours are possible here. Undo to step back, or restart with a fresh mix.',
-      [{label:'Undo',ghost:1,fn:()=>{hideCard();undo()}},{label:'Restart',fn:()=>{hideCard();reshuffle()}}],
+    const n=stepBackCount();
+    showCard('Out of moves',n?`No more pours are possible. Rewind ${n} move${n===1?'':'s'} to just before things went wrong, or restart with a fresh mix.`:'No more pours are possible here. Restart with a fresh mix and try again.',
+      (n?[{label:`Rewind ${n}`,ghost:1,fn:()=>{hideCard();for(let q=0;q<n;q++)undo();toast(`Rewound ${n} move${n===1?'':'s'}. You can still win from here!`)}}]:[]).concat([{label:'Restart',fn:()=>{hideCard();reshuffle()}}]),
       `<img class="ohno" src="${ART['cats-oh-no']||ART.peek}" alt="">`);
     $('#ov').dataset.dismiss='1';
     const c=$('#card');const x=document.createElement('button');x.className='card-x';x.setAttribute('aria-label','Close');x.innerHTML='&times;';x.onclick=hideCard;c.prepend(x);
@@ -1212,19 +1279,29 @@ function kindCard(k,then){
 function reshuffle(){startLevel(S.level,true,(S.variant||0)+1,S.stage||0);toast('Fresh layout. Same level, new mix.')}
 function undo(){
   if(S.busy||!S.hist.length)return;const h=S.hist.pop();
-  S.units=h.units;S.meta=h.meta;S.extra=h.extra;S.moves=h.moves;S.tags=h.tags;S.sel=-1;S.deadWarned=false;
+  S.units=h.units;S.meta=h.meta;S.extra=h.extra;S.moves=h.moves;if(h.bag!=null){S.bag=h.bag;S.coins=h.coins;save()}S.tags=h.tags;S.sel=-1;S.deadWarned=false;
   while(B.length>S.units.length)B.pop();syncVis();layout(false);B.forEach(b=>b.wob=.5);Snd.play('undo');updateUI();hideToast();
 }
+const BOTTLE_PRICE=500,DIG_PRICE=30;
+function placeBottle(){S.units.push([]);S.meta.push(M0());if(S.tags)S.tags.push([]);const b=newVis(S.units.length-1);B.push(b);syncVis();layout(false);
+  b.hx=b.tx;b.hy=b.ty;b.oy=-H;tween(500,p=>b.oy=-H*(1-p),ease.back);updateUI()}
 function addBottle(){
-  if(S.busy||S.extra<=0||S.won)return;S.hist.push(snapshot());S.extra--;
-  S.units.push([]);S.meta.push(M0());if(S.tags)S.tags.push([]);const b=newVis(S.units.length-1);B.push(b);syncVis();layout(false);
-  b.hx=b.tx;b.hy=b.ty;b.oy=-H;tween(500,p=>b.oy=-H*(1-p),ease.back);updateUI();
+  if(S.busy||S.won)return;
+  if(S.extra>=2){toast('Two extra bottles is the most for one level.');return}
+  if(S.bag>0){S.hist.push(snapshot());S.bag--;S.extra++;save();placeBottle();toast(`Spare bottle from your bag. ${S.bag} left.`);return}
+  const c=$('#card');
+  if(S.coins<BOTTLE_PRICE){c.innerHTML=`<h2>No spare bottles</h2><p>Your bag is empty and a bottle costs ${BOTTLE_PRICE} coins (you have ${S.coins}). Dig one up in Moto\'s Garden, or earn more coins by winning levels.</p><div class="row"><button class="btn ghost" id="bbNo">Keep playing</button><button class="btn" id="bbDig">Moto\'s Garden</button></div>`;
+    $('#ov').hidden=false;$('#bbNo').onclick=hideCard;$('#bbDig').onclick=()=>{hideCard();openGarden()};return}
+  c.innerHTML=`<h2>Buy a spare bottle?</h2><p>Your bag is empty. Buy one now for <b>${BOTTLE_PRICE} coins</b>? You have ${S.coins}. (Bottles are cheaper to dig up in Moto\'s Garden.)</p><div class="row"><button class="btn ghost" id="bbNo">Not now</button><button class="btn" id="bbYes">Buy for ${BOTTLE_PRICE}</button></div>`;
+  $('#ov').hidden=false;$('#bbNo').onclick=hideCard;$('#bbYes').onclick=()=>{hideCard();S.hist.push(snapshot());S.coins-=BOTTLE_PRICE;S.extra++;save();placeBottle();Snd.play('golden')};
 }
 function hint(){
   if(S.busy||S.won)return;S.sel=-1;
   const sol=solve(S.units,S.meta,S.cap,levelKind(S.level)==='brutal'?500000:150000,S.moves);
   if(sol&&sol.length){hintFx={ids:sol[0],t0:performance.now()};Snd.play('hint');return}
-  if(sol===null){S.deadWarned=false;deadEnd();return}
+  if(sol===null){checkStuck();const s2=solve(S.units,S.meta,S.cap,150000,S.moves);if(s2&&s2.length){hintFx={ids:s2[0],t0:performance.now()};Snd.play('hint');return}
+    {const n=stepBackCount();
+      if(n)toast(`No winning moves from here.`,{label:`Rewind ${n}`,fn:()=>{for(let q=0;q<n;q++)undo();toast(`Rewound ${n} move${n===1?'':'s'}. You can still win from here!`)}});else toast('No winning moves from here. Try a restart.')}return}
   toast('That one is tricky to work out. Make a move and ask again.');
 }
 function stageClear(){
@@ -1237,7 +1314,7 @@ function stageClear(){
 }
 function win(){
   if(S.stage<superStages(S.level)-1)return stageClear();
-  S.won=true;const L=S.level;S.unlocked=Math.max(S.unlocked,L+1);save();updateUI();
+  S.won=true;const L=S.level;awardWin(L);S.unlocked=Math.max(S.unlocked,L+1);save();updateUI();
   const mile=L%15===0;
   if(mile&&levelKind(L)==='super'){S.ribbons=S.ribbons||{};S.ribbons[L]=1;S.stage=0;save()}
   Snd.play(mile?'milestone':'win');
@@ -1573,10 +1650,11 @@ document.querySelectorAll('img[data-art]').forEach(im=>im.src=ART[im.dataset.art
 if(ART.gameBg){document.body.style.background='transparent';const bs=document.documentElement.style;bs.backgroundImage=`linear-gradient(rgba(16,10,34,.45),rgba(16,10,34,.45)),url(${ART.gameBg})`;bs.backgroundSize='cover';bs.backgroundPosition='center';bs.backgroundRepeat='no-repeat'}
 (function(){try{const sp=document.createElement('div');sp.id='splash';sp.innerHTML='<img alt="Moto &amp; Bemo: Tails of Color">';sp.firstChild.src=ART.logo;
   document.body.append(sp);const go=()=>{sp.classList.add('gone');setTimeout(()=>sp.remove(),700)};sp.onclick=go;setTimeout(go,1800)}catch(e){}})();
+setTimeout(()=>{try{openMenu()}catch(e){console.error(e)}},0);
 const MUS_ICON='<svg viewBox="0 0 24 24" fill="#FBF3E4"><path d="M9 4l11-2v13a3 3 0 1 1-2-2.8V6l-7 1.3V17a3 3 0 1 1-2-2.8z"/></svg>';
 function updateUI(){
   $('#lvlNum').textContent=S.level;Snd.setLevel(levelKind(S.level));{const k=levelKind(S.level),l=$('#lvlLbl');l.textContent=k==='brutal'?'Brutal':k==='tricky'?'Tricky':k==='super'?'Marathon':'Level';l.className=k;const mk=$('#lvlMark');mk.hidden=!k;if(k)mk.src=ART['marker-'+k]||''}renderTrack();
-  $('#undo').disabled=!S.hist.length;$('#albNew').hidden=!S.albumNew;$('#add').disabled=S.extra<=0;$('#addN').textContent=S.extra;$('#addN').hidden=S.extra<=0;
+  $('#undo').disabled=!S.hist.length;$('#albNew').hidden=!S.albumNew;$('#add').disabled=S.extra>=2;$('#addN').textContent=S.bag>0?S.bag:'$';$('#addN').hidden=false;$('#addN').classList.toggle('buy',!S.bag);{const hc=$('#homeCoins');if(hc)hc.textContent=fmtC(S.coins)}
   $('#snd').innerHTML=Snd.muted?SND_OFF:SND_ON;$('#mus').innerHTML=MUS_ICON;$('#mus').classList.toggle('off',!Snd.music);$('#mus').setAttribute('aria-label',Snd.music?'Music on':'Music off');$('#snd').setAttribute('aria-label',Snd.muted?'Sound off':'Sound on');
   $('#rule').innerHTML=ruleText();
 }
@@ -1590,7 +1668,15 @@ function showCard(title,text,btns,cats){
   c.querySelector('h2').textContent=title;c.querySelector('p').textContent=text;
   btns.forEach(o=>{const b=document.createElement('button');b.className='btn'+(o.ghost?' ghost':'');b.textContent=o.label;b.onclick=o.fn;c.querySelector('.row').append(b)});
   $('#ov').hidden=false;setTimeout(()=>c.querySelector('.row button:last-child').focus(),50)}
-function addCodeToCard(){const c=$('#card'),row=c.querySelector('.row');row.insertAdjacentHTML('beforebegin',codeBoxHTML().replace('Your save code','Saved. Your code for other devices'));wireCopy(c)}
+const fmtC=n=>Number(n||0).toLocaleString('en-US');
+// Coins: 100 a win, 150 for a tidy win, 200 at or under par; bonuses for special levels. Replays pay a little. Every win also earns a dig.
+function awardWin(L){const first=L>=S.unlocked,k=levelKind(L),par=S.par||0,mv=S.moves;let c,tag;
+  if(par&&mv<=par){c=200;tag='Perfect!'}else if(par&&mv<=Math.ceil(par*1.3)){c=150;tag='Tidy!'}else{c=100;tag=''}
+  if(k==='brutal')c+=200;if(k==='super')c+=150;if(L%50===0)c*=2;if(!first)c=Math.round(c*.2);
+  const dg=first?(par&&mv<=par?2:1):0;S.coins+=c;S.digs+=dg;S.lastPrize={c,dg,tag,par};save()}
+function prizeHTML(){const p=S.lastPrize;if(!p)return '';S.lastPrize=null;
+  return `<div class="prize">${p.tag?`<b>${p.tag}</b> `:''}<span class="coin"></span>+${fmtC(p.c)} coins${p.dg?` &middot; +${p.dg} dig${p.dg>1?'s':''} in Moto's Garden`:''}${p.par?`<small>Par ${p.par} moves</small>`:''}</div>`}
+function addCodeToCard(){const c=$('#card'),row=c.querySelector('.row');row.insertAdjacentHTML('beforebegin',prizeHTML());row.insertAdjacentHTML('beforebegin',codeBoxHTML().replace('Your save code','Saved. Your code for other devices'));wireCopy(c)}
 function hideCard(){$('#ov').hidden=true;$('#ov').dataset.dismiss=''}
 $('#ov').addEventListener('click',e=>{if(e.target.id==='ov'&&$('#ov').dataset.dismiss)hideCard()});
 
@@ -1600,7 +1686,62 @@ $('#mapBtn').onclick=()=>{if(!S.busy)openMap()};$('#mapBtn2').onclick=()=>{if(!S
 addEventListener('pointerdown',()=>Snd.wake(),{once:true});
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('#map').hidden)closeMap();if(!$('#album').hidden)closeAlbum()}});
 $('#saveBtn').onclick=openSave;
-$('#albumBtn').onclick=openAlbum;$('#albClose').onclick=closeAlbum;
+/*MENU*/
+/* ===== Main menu ===== */
+const svgURL=x=>'data:image/svg+xml,'+encodeURIComponent(x);
+const PIECE_SVG=k=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50"><path d="M14 4h12v8l6 6v26q0 4-4 4H12q-4 0-4-4V18l6-6z" fill="#cfeaff55" stroke="#bfe3ff" stroke-width="2"/>${k===0?'<rect x="13" y="2" width="14" height="6" rx="2" fill="#c08a4a"/><path d="M14 12h12" stroke="#fff" stroke-width="2"/>':k===1?'<path d="M9 24h22v8H9z" fill="#8fd3ff"/>':'<path d="M9 32h22v12q0 3-3 3H12q-3 0-3-3z" fill="#4a8fd8"/>'}</svg>`;
+function openMenu(){const m=$('#menu');if(!$('#menuLogo').src)$('#menuLogo').src=ART.logo;$('#mDigImg').src=ART.peek;
+  $('#mCoins').textContent=fmtC(S.coins);$('#mBag').textContent=S.bag;$('#mBagW').textContent=S.bag==1?'spare bottle':'spare bottles';
+  $('#mPlay').innerHTML=`Play<small>Level ${S.level}</small>`;
+  $('#mDigN').hidden=!S.digs;$('#mDigN').textContent=S.digs;$('#mDigSub').textContent=S.digs?`${S.digs} free dig${S.digs>1?'s':''} waiting`:'Dig up spare bottles';
+  $('#mAlbNew').hidden=!S.albumNew;m.hidden=false}
+function closeMenu(){$('#menu').hidden=true;updateUI()}
+$('#mPlay').onclick=closeMenu;
+$('#mDig').onclick=()=>{$('#menu').hidden=true;openGarden()};
+$('#mAlbum').onclick=()=>{$('#menu').hidden=true;openAlbum()};
+$('#mMap').onclick=()=>{$('#menu').hidden=true;openMap()};
+
+/* ===== Moto's Garden ===== */
+// 5x5 patch: one spare bottle in 3 pieces, two small coin pouches, one golden bone (+3 digs), the rest bones and pebbles.
+// An empty hole shows how near the closest undug bottle piece is: hot (next to it), warm (2 away), cold (further).
+function newGarden(){const n=25,cells=Array(n).fill('.');const free=[...Array(n).keys()];
+  const take=()=>free.splice(Math.floor(Math.random()*free.length),1)[0];
+  for(let k=0;k<3;k++)cells[take()]='p'+k;
+  for(let k=0;k<2;k++)cells[take()]='c'+(15+Math.floor(Math.random()*26));
+  cells[take()]='g';for(let k=0;k<5;k++)cells[take()]='t'+Math.floor(Math.random()*TOYS.length);
+  return{cells,dug:Array(n).fill(0),got:0}}
+function gDist(g,i){let best=9;g.cells.forEach((c,j)=>{if(c[0]==='p'&&!g.dug[j]){const d=Math.max(Math.abs(i%5-j%5),Math.abs((i/5|0)-(j/5|0)));if(d<best)best=d}});return best}
+const TOYS=[['g_yarn','an old ball of yarn'],['g_fish','a fishy snack (no bottle though)'],['g_mouse','a squeaky toy mouse'],['g_bell','a lost jingle bell']];
+const itemImg=c=>{const src=c[0]==='c'?ART.chestOpen:c==='g'?ART.keyArt:c[0]==='t'?ART[TOYS[+c[1]][0]]:null;return src?`<img src="${src}" alt="">`:''};
+function gMsg(t){$('#gMsg').textContent=t}
+function openGarden(){if(!S.garden)S.garden=newGarden();$('#gDog').src=S.digs?ART.peek:ART['cat-thinking'];renderGarden();
+  gMsg(S.digs?'Mrrow! Tap a patch and I\'ll dig. Holes tell you how close the bottle pieces are.':'Out of digs! Win levels to earn more, or buy some below.');$('#garden').hidden=false}
+function closeGarden(){$('#garden').hidden=true;save();openMenu()}
+$('#gClose').onclick=closeGarden;
+$('#gBuy').onclick=()=>{if(S.coins<120){gMsg(`5 digs cost 120 coins and you have ${S.coins}. Win a few levels and come back!`);return}
+  S.coins-=120;S.digs+=5;save();renderGarden();Snd.play('golden');$('#gDog').src=ART.peek;gMsg('Five more digs! Let\'s find that bottle.')};
+function renderGarden(){const g=S.garden,G=$('#gGrid');G.style.setProperty('--paw',`url("${ART.g_paw}")`);
+  $('#gSub').innerHTML=`<i class="coin"></i>${fmtC(S.coins)} &nbsp; <i class="bag"></i>${S.bag} spare bottle${S.bag==1?'':'s'}`;
+  $('#gDigs').textContent=`${S.digs} dig${S.digs==1?'':'s'} left`;
+  $('#gPieces').innerHTML='Bottle pieces '+[0,1,2].map(k=>`<i class="${g.cells.some((c,j)=>c==='p'+k&&g.dug[j])?'got':''}">${PIECE_SVG(k)}</i>`).join('');
+  G.innerHTML='';g.cells.forEach((c,i)=>{const b=document.createElement('button');b.className='g-cell'+(g.dug[i]?' dug':'');b.setAttribute('aria-label',g.dug[i]?'Dug':'Patch of grass');
+    if(g.dug[i]){if(c[0]==='p')b.innerHTML=PIECE_SVG(+c[1]);else b.innerHTML=itemImg(c);
+      if(c==='.'||c[0]==='t'){const d=gDist(g,i);if(d<9){const col=d<=1?'#ff6a3d':d===2?'#ffc247':'#7cc6ff';b.style.boxShadow=`inset 0 0 0 4px ${col},inset 0 4px 8px #0006`}}}
+    else b.onclick=()=>digAt(i);G.append(b)})}
+function digAt(i){const g=S.garden;if(g.dug[i]||$('#garden').hidden)return;
+  if(S.digs<=0){gMsg('Out of digs! Win a level for a free dig, or buy 5 for 120 coins.');Snd.play('invalid');return}
+  S.digs--;g.dug[i]=1;const c=g.cells[i];const dog=$('#gDog');dog.classList.remove('dig');void dog.offsetWidth;dog.classList.add('dig');
+  let msg;
+  if(c[0]==='p'){g.got++;Snd.play('wake');dog.src=ART.cheer;setTimeout(()=>dog.src=ART.peek,1800);msg=g.got<3?`Mrrow! A bottle piece! ${3-g.got} more to go.`:'All three pieces! Bemo glued the bottle back together. It\'s in your bag!'}
+  else if(c[0]==='c'){const a=+c.slice(1);S.coins+=a;Snd.play('golden');msg=`A tiny treasure chest! +${a} coins.`}
+  else if(c==='g'){S.digs+=3;Snd.play('golden');msg='The golden key! It unlocks 3 extra digs.'}
+  else{const d=gDist(g,i);Snd.play('select');msg=(c[0]==='t'?`Just ${TOYS[+c[1]][1]}. `:'Only dirt. ')+(d<=1?'But my whiskers say it\'s HOT here!':d===2?'Warm\u2026 a piece is close.':'Cold. Try somewhere else.')}
+  if(S.digs<=0&&g.got<3)setTimeout(()=>{if(!$('#garden').hidden)dog.src=ART['cat-thinking']},900);
+  if(g.got>=3){S.bag++;S.garden=newGarden();save();renderGarden();setTimeout(()=>{if(!$('#garden').hidden)gMsg('A fresh patch to dig. Bottles in your bag can be used in any level.')},2600)}
+  else{save();renderGarden()}
+  const cell=$('#gGrid').children[i];if(cell&&g.got<3)cell.classList.add('pop');gMsg(msg)}
+
+$('#homeBtn').onclick=()=>{if(!S.busy)openMenu()};$('#albClose').onclick=closeAlbum;
 $('#puzCv').addEventListener('pointerdown',puzTap);$('#puzUndo').onclick=puzUndo;$('#puzSolve').onclick=askSolve;$('#puzPeek').onclick=()=>{PZ.peek=performance.now()+1500};
 addEventListener('resize',()=>{if(!$('#puz').hidden)sizePuzzle()});
 $('#rule').onclick=()=>showHelp(mechsOf());$('#rule').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showHelp(mechsOf())}};
@@ -1632,7 +1773,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v34';let shown=false;
+  const BUILD='mb-water-v36';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
