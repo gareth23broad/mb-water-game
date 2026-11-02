@@ -151,7 +151,7 @@ body{
 .menu-wrap,.g-wrap{box-sizing:border-box}
 .menu-wrap{margin:auto;width:100%;max-width:440px;display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:calc(20px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
 #menuLogo{width:min(100%,380px);align-self:center;height:auto}
-.wallet{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;font-size:15px;color:var(--muted)} .wallet b{color:var(--cream);font-size:18px}
+.wallet{display:flex;justify-content:center;align-items:center;gap:26px;flex-wrap:wrap;font-size:15px;color:var(--muted)} .wallet span{display:flex;align-items:center;gap:6px} .wallet b{color:var(--gold);font-size:36px;font-weight:900} .wallet span+span b{color:#8fd3ff} .wallet .coin{width:34px;height:34px} .wallet .bag{width:26px;height:36px}
 .btn.big{font-size:22px;padding:18px 20px;border-radius:20px}
 .btn.big small{display:block;font-size:13px;font-weight:700;opacity:.75}
 .mcard{position:relative;display:flex;align-items:center;gap:14px;text-align:left;border:0;border-radius:20px;padding:12px 16px;background:linear-gradient(135deg,#3f6b3a,#2c4a2a);color:var(--cream);font:inherit;cursor:pointer;box-shadow:0 4px 0 #1b2e1a}
@@ -164,18 +164,20 @@ body{
 .g-dog img.dig{animation:gDig .35s ease 2} @keyframes gDig{50%{transform:translateY(6px) rotate(-8deg)}}
 .g-dog p{margin:0;background:#fffbe9;color:#3b2a14;border-radius:16px;padding:10px 12px;font-size:14px;line-height:1.35;position:relative;flex:1;min-width:0}
 .g-pieces{display:flex;gap:10px;align-items:center;font-size:13px;color:#cfe6c4} .g-pieces i{width:30px;height:38px;display:inline-block;opacity:.25;filter:grayscale(1)} .g-pieces i.got{opacity:1;filter:none}
-.g-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%;max-width:400px}
+.g-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:400px}
 .g-cell{aspect-ratio:1;border:0;border-radius:14px;cursor:pointer;padding:0;display:grid;place-items:center;font:inherit;font-weight:800;font-size:12px;color:#fff;
   background:radial-gradient(circle at 30% 30%,#7fb35a,#4f8a37);box-shadow:inset 0 -5px 0 #3b6d29,0 2px 0 #16240f;position:relative;overflow:hidden}
 .g-cell::after{content:"";position:absolute;inset:26%;background:var(--paw) center/contain no-repeat;opacity:.22}
 .g-cell.dug{cursor:default;background:radial-gradient(circle at 50% 45%,#5a3b22,#7a5232 70%);box-shadow:inset 0 4px 8px #0006}
 .g-cell.dug::after{display:none} .g-cell svg,.g-cell img{width:74%;height:74%;object-fit:contain}
-.g-dog img{object-fit:contain} .mcard img{object-fit:contain}
+.g-dog img{object-fit:contain} .g-cell img.toy{width:58%;height:58%;filter:brightness(0) invert(.93) sepia(.35)} .mcard img{object-fit:contain}
 .g-cell.pop{animation:gPop .45s ease} @keyframes gPop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
-.pp{display:inline-block;width:12px;height:12px;border-radius:50%;margin:0 3px 0 8px;vertical-align:-1px}
-.pp.hot{background:#ff6a3d}.pp.warm{background:#ffc247}.pp.cold{background:#7cc6ff}
-.g-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:400px;font-weight:800}
-.g-key{font-size:12px;color:#cfe6c4;margin:0;text-align:center}
+.g-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;max-width:400px;font-weight:800;font-size:18px} .g-bar span b{font-size:28px}
+.g-wallet{display:flex;justify-content:center;gap:28px;width:100%;font-weight:900;font-size:38px;line-height:1}
+.g-wallet div{display:flex;align-items:center;gap:4px} .g-wallet .coin{width:38px;height:38px;margin-right:6px} .g-wallet .bag{width:28px;height:40px;margin-right:6px}
+.g-wallet b{color:var(--gold)} .g-wallet div+div b{color:#8fd3ff}
+.g-buy{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;line-height:1.1}
+.g-buy span{font-size:15px} .g-buy b{font-size:26px;display:flex;align-items:center} .g-buy .coin{width:24px;height:24px}
 #album,#puz{position:fixed; inset:0; z-index:15; background:var(--night); display:flex; flex-direction:column}
 .alb-note{text-align:center; color:var(--muted); font-size:14px; margin:14px 16px 4px}
 .alb-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; padding:12px max(16px,env(safe-area-inset-right,0px)) 30px max(16px,env(safe-area-inset-left,0px)); max-width:760px; margin:0 auto}
@@ -295,7 +297,7 @@ button:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-r
 <div id="menu" hidden>
   <div class="menu-wrap">
     <img id="menuLogo" alt="Moto &amp; Bemo: Tails of Color">
-    <div class="wallet"><span><i class="coin"></i><b id="mCoins">0</b> coins</span><span><i class="bag"></i><b id="mBag">0</b> <span id="mBagW">spare bottles</span></span></div>
+    <div class="wallet"><span><i class="coin"></i><b id="mCoins">0</b> gold</span><span><i class="bag"></i><b id="mBag">0</b> <span id="mBagW">spare bottles</span></span></div>
     <button class="btn big" id="mPlay">Play</button>
     <button class="mcard" id="mDig"><img id="mDigImg" alt=""><div><b>Moto's Garden</b><small id="mDigSub">Dig up spare bottles</small></div><em id="mDigN" hidden></em></button>
     <div class="mrow"><button class="btn ghost" id="mAlbum">Album<em id="mAlbNew" hidden>new</em></button><button class="btn ghost" id="mMap">Map</button></div>
@@ -304,11 +306,11 @@ button:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-r
 <div id="garden" hidden>
   <div class="map-top"><div><h2>Moto's Garden</h2><span id="gSub"></span></div><button class="icon-btn" id="gClose" aria-label="Close garden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="g-wrap">
+    <div class="g-wallet"><div><i class="coin"></i><b id="gCoins">0</b></div><div><i class="bag"></i><b id="gBag">0</b></div></div>
     <div class="g-dog"><img id="gDog" alt="Moto"><p id="gMsg"></p></div>
     <div class="g-pieces" id="gPieces"></div>
     <div class="g-grid" id="gGrid"></div>
-    <div class="g-bar"><span id="gDigs"></span><button class="btn ghost" id="gBuy">5 digs for 120</button></div>
-    <p class="g-key"><span class="pp hot"></span>Hot <span class="pp warm"></span>Warm <span class="pp cold"></span>Cold: how close the nearest bottle piece is</p>
+    <div class="g-bar"><span id="gDigs"></span><button class="btn g-buy" id="gBuy"><span>+5 digs</span><b><i class="coin"></i>120</b></button></div>
   </div>
 </div>
 <div id="ov" hidden><div class="card" id="card"></div></div>
@@ -1290,9 +1292,9 @@ function addBottle(){
   if(S.extra>=2){toast('Two extra bottles is the most for one level.');return}
   if(S.bag>0){S.hist.push(snapshot());S.bag--;S.extra++;save();placeBottle();toast(`Spare bottle from your bag. ${S.bag} left.`);return}
   const c=$('#card');
-  if(S.coins<BOTTLE_PRICE){c.innerHTML=`<h2>No spare bottles</h2><p>Your bag is empty and a bottle costs ${BOTTLE_PRICE} coins (you have ${S.coins}). Dig one up in Moto\'s Garden, or earn more coins by winning levels.</p><div class="row"><button class="btn ghost" id="bbNo">Keep playing</button><button class="btn" id="bbDig">Moto\'s Garden</button></div>`;
+  if(S.coins<BOTTLE_PRICE){c.innerHTML=`<h2>No spare bottles</h2><p>Your bag is empty and a bottle costs ${BOTTLE_PRICE} gold (you have ${S.coins}). Dig one up in Moto\'s Garden, or earn more gold by winning levels.</p><div class="row"><button class="btn ghost" id="bbNo">Keep playing</button><button class="btn" id="bbDig">Moto\'s Garden</button></div>`;
     $('#ov').hidden=false;$('#bbNo').onclick=hideCard;$('#bbDig').onclick=()=>{hideCard();openGarden()};return}
-  c.innerHTML=`<h2>Buy a spare bottle?</h2><p>Your bag is empty. Buy one now for <b>${BOTTLE_PRICE} coins</b>? You have ${S.coins}. (Bottles are cheaper to dig up in Moto\'s Garden.)</p><div class="row"><button class="btn ghost" id="bbNo">Not now</button><button class="btn" id="bbYes">Buy for ${BOTTLE_PRICE}</button></div>`;
+  c.innerHTML=`<h2>Buy a spare bottle?</h2><p>Your bag is empty. Buy one now for <b>${BOTTLE_PRICE} gold</b>? You have ${S.coins}. (Bottles are cheaper to dig up in Moto\'s Garden.)</p><div class="row"><button class="btn ghost" id="bbNo">Not now</button><button class="btn" id="bbYes"><i class="coin"></i>${BOTTLE_PRICE} gold</button></div>`;
   $('#ov').hidden=false;$('#bbNo').onclick=hideCard;$('#bbYes').onclick=()=>{hideCard();S.hist.push(snapshot());S.coins-=BOTTLE_PRICE;S.extra++;save();placeBottle();Snd.play('golden')};
 }
 function hint(){
@@ -1675,7 +1677,7 @@ function awardWin(L){const first=L>=S.unlocked,k=levelKind(L),par=S.par||0,mv=S.
   if(k==='brutal')c+=200;if(k==='super')c+=150;if(L%50===0)c*=2;if(!first)c=Math.round(c*.2);
   const dg=first?(par&&mv<=par?2:1):0;S.coins+=c;S.digs+=dg;S.lastPrize={c,dg,tag,par};save()}
 function prizeHTML(){const p=S.lastPrize;if(!p)return '';S.lastPrize=null;
-  return `<div class="prize">${p.tag?`<b>${p.tag}</b> `:''}<span class="coin"></span>+${fmtC(p.c)} coins${p.dg?` &middot; +${p.dg} dig${p.dg>1?'s':''} in Moto's Garden`:''}${p.par?`<small>Par ${p.par} moves</small>`:''}</div>`}
+  return `<div class="prize">${p.tag?`<b>${p.tag}</b> `:''}<span class="coin"></span>+${fmtC(p.c)} gold${p.dg?` &middot; +${p.dg} dig${p.dg>1?'s':''} in Moto's Garden`:''}${p.par?`<small>Par ${p.par} moves</small>`:''}</div>`}
 function addCodeToCard(){const c=$('#card'),row=c.querySelector('.row');row.insertAdjacentHTML('beforebegin',prizeHTML());row.insertAdjacentHTML('beforebegin',codeBoxHTML().replace('Your save code','Saved. Your code for other devices'));wireCopy(c)}
 function hideCard(){$('#ov').hidden=true;$('#ov').dataset.dismiss=''}
 $('#ov').addEventListener('click',e=>{if(e.target.id==='ov'&&$('#ov').dataset.dismiss)hideCard()});
@@ -1691,7 +1693,7 @@ $('#saveBtn').onclick=openSave;
 const svgURL=x=>'data:image/svg+xml,'+encodeURIComponent(x);
 const PIECE_SVG=k=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 50"><path d="M14 4h12v8l6 6v26q0 4-4 4H12q-4 0-4-4V18l6-6z" fill="#cfeaff55" stroke="#bfe3ff" stroke-width="2"/>${k===0?'<rect x="13" y="2" width="14" height="6" rx="2" fill="#c08a4a"/><path d="M14 12h12" stroke="#fff" stroke-width="2"/>':k===1?'<path d="M9 24h22v8H9z" fill="#8fd3ff"/>':'<path d="M9 32h22v12q0 3-3 3H12q-3 0-3-3z" fill="#4a8fd8"/>'}</svg>`;
 function openMenu(){const m=$('#menu');if(!$('#menuLogo').src)$('#menuLogo').src=ART.logo;$('#mDigImg').src=ART.peek;
-  $('#mCoins').textContent=fmtC(S.coins);$('#mBag').textContent=S.bag;$('#mBagW').textContent=S.bag==1?'spare bottle':'spare bottles';
+  $('#mCoins').textContent=fmtC(S.coins);$('#mBag').textContent=S.bag;$('#mBagW').textContent=S.bag==1?'bottle':'bottles';
   $('#mPlay').innerHTML=`Play<small>Level ${S.level}</small>`;
   $('#mDigN').hidden=!S.digs;$('#mDigN').textContent=S.digs;$('#mDigSub').textContent=S.digs?`${S.digs} free dig${S.digs>1?'s':''} waiting`:'Dig up spare bottles';
   $('#mAlbNew').hidden=!S.albumNew;m.hidden=false}
@@ -1702,40 +1704,37 @@ $('#mAlbum').onclick=()=>{$('#menu').hidden=true;openAlbum()};
 $('#mMap').onclick=()=>{$('#menu').hidden=true;openMap()};
 
 /* ===== Moto's Garden ===== */
-// 5x5 patch: one spare bottle in 3 pieces, two small coin pouches, one golden bone (+3 digs), the rest bones and pebbles.
-// An empty hole shows how near the closest undug bottle piece is: hot (next to it), warm (2 away), cold (further).
-function newGarden(){const n=25,cells=Array(n).fill('.');const free=[...Array(n).keys()];
+// 4x4 patch: one spare bottle in 3 pieces, a small treasure chest of coins, the golden key (+3 digs), cat toys and dirt.
+function newGarden(){const n=16,cells=Array(n).fill('.');const free=[...Array(n).keys()];
   const take=()=>free.splice(Math.floor(Math.random()*free.length),1)[0];
   for(let k=0;k<3;k++)cells[take()]='p'+k;
-  for(let k=0;k<2;k++)cells[take()]='c'+(15+Math.floor(Math.random()*26));
-  cells[take()]='g';for(let k=0;k<5;k++)cells[take()]='t'+Math.floor(Math.random()*TOYS.length);
+  for(let k=0;k<1;k++)cells[take()]='c'+(15+Math.floor(Math.random()*26));
+  cells[take()]='g';for(let k=0;k<4;k++)cells[take()]='t'+Math.floor(Math.random()*TOYS.length);
   return{cells,dug:Array(n).fill(0),got:0}}
-function gDist(g,i){let best=9;g.cells.forEach((c,j)=>{if(c[0]==='p'&&!g.dug[j]){const d=Math.max(Math.abs(i%5-j%5),Math.abs((i/5|0)-(j/5|0)));if(d<best)best=d}});return best}
 const TOYS=[['g_yarn','an old ball of yarn'],['g_fish','a fishy snack (no bottle though)'],['g_mouse','a squeaky toy mouse'],['g_bell','a lost jingle bell']];
-const itemImg=c=>{const src=c[0]==='c'?ART.chestOpen:c==='g'?ART.keyArt:c[0]==='t'?ART[TOYS[+c[1]][0]]:null;return src?`<img src="${src}" alt="">`:''};
+const itemImg=c=>{const src=c[0]==='c'?ART.chestOpen:c==='g'?ART.keyArt:c[0]==='t'?ART[TOYS[+c[1]][0]]:null;return src?`<img src="${src}" alt=""${c[0]==='t'?' class="toy"':''}>`:''};
 function gMsg(t){$('#gMsg').textContent=t}
 function openGarden(){if(!S.garden)S.garden=newGarden();$('#gDog').src=S.digs?ART.peek:ART['cat-thinking'];renderGarden();
-  gMsg(S.digs?'Mrrow! Tap a patch and I\'ll dig. Holes tell you how close the bottle pieces are.':'Out of digs! Win levels to earn more, or buy some below.');$('#garden').hidden=false}
+  gMsg(S.digs?'Mrrow! Tap a patch and I\'ll dig. Three bottle pieces are hiding somewhere!':'Out of digs! Win levels to earn more, or buy some below.');$('#garden').hidden=false}
 function closeGarden(){$('#garden').hidden=true;save();openMenu()}
 $('#gClose').onclick=closeGarden;
-$('#gBuy').onclick=()=>{if(S.coins<120){gMsg(`5 digs cost 120 coins and you have ${S.coins}. Win a few levels and come back!`);return}
+$('#gBuy').onclick=()=>{if(S.coins<120){gMsg(`5 digs cost 120 gold and you have ${S.coins}. Win a few levels and come back!`);return}
   S.coins-=120;S.digs+=5;save();renderGarden();Snd.play('golden');$('#gDog').src=ART.peek;gMsg('Five more digs! Let\'s find that bottle.')};
 function renderGarden(){const g=S.garden,G=$('#gGrid');G.style.setProperty('--paw',`url("${ART.g_paw}")`);
-  $('#gSub').innerHTML=`<i class="coin"></i>${fmtC(S.coins)} &nbsp; <i class="bag"></i>${S.bag} spare bottle${S.bag==1?'':'s'}`;
-  $('#gDigs').textContent=`${S.digs} dig${S.digs==1?'':'s'} left`;
+  $('#gSub').textContent='';$('#gCoins').textContent=fmtC(S.coins);$('#gBag').textContent=S.bag;
+  $('#gDigs').innerHTML=`<b>${S.digs}</b> dig${S.digs==1?'':'s'} left`;
   $('#gPieces').innerHTML='Bottle pieces '+[0,1,2].map(k=>`<i class="${g.cells.some((c,j)=>c==='p'+k&&g.dug[j])?'got':''}">${PIECE_SVG(k)}</i>`).join('');
   G.innerHTML='';g.cells.forEach((c,i)=>{const b=document.createElement('button');b.className='g-cell'+(g.dug[i]?' dug':'');b.setAttribute('aria-label',g.dug[i]?'Dug':'Patch of grass');
-    if(g.dug[i]){if(c[0]==='p')b.innerHTML=PIECE_SVG(+c[1]);else b.innerHTML=itemImg(c);
-      if(c==='.'||c[0]==='t'){const d=gDist(g,i);if(d<9){const col=d<=1?'#ff6a3d':d===2?'#ffc247':'#7cc6ff';b.style.boxShadow=`inset 0 0 0 4px ${col},inset 0 4px 8px #0006`}}}
+    if(g.dug[i]){if(c[0]==='p')b.innerHTML=PIECE_SVG(+c[1]);else b.innerHTML=itemImg(c);}
     else b.onclick=()=>digAt(i);G.append(b)})}
 function digAt(i){const g=S.garden;if(g.dug[i]||$('#garden').hidden)return;
-  if(S.digs<=0){gMsg('Out of digs! Win a level for a free dig, or buy 5 for 120 coins.');Snd.play('invalid');return}
+  if(S.digs<=0){gMsg('Out of digs! Win a level for a free dig, or buy 5 for 120 gold.');Snd.play('invalid');return}
   S.digs--;g.dug[i]=1;const c=g.cells[i];const dog=$('#gDog');dog.classList.remove('dig');void dog.offsetWidth;dog.classList.add('dig');
   let msg;
   if(c[0]==='p'){g.got++;Snd.play('wake');dog.src=ART.cheer;setTimeout(()=>dog.src=ART.peek,1800);msg=g.got<3?`Mrrow! A bottle piece! ${3-g.got} more to go.`:'All three pieces! Bemo glued the bottle back together. It\'s in your bag!'}
-  else if(c[0]==='c'){const a=+c.slice(1);S.coins+=a;Snd.play('golden');msg=`A tiny treasure chest! +${a} coins.`}
+  else if(c[0]==='c'){const a=+c.slice(1);S.coins+=a;Snd.play('golden');msg=`A tiny treasure chest! +${a} gold.`}
   else if(c==='g'){S.digs+=3;Snd.play('golden');msg='The golden key! It unlocks 3 extra digs.'}
-  else{const d=gDist(g,i);Snd.play('select');msg=(c[0]==='t'?`Just ${TOYS[+c[1]][1]}. `:'Only dirt. ')+(d<=1?'But my whiskers say it\'s HOT here!':d===2?'Warm\u2026 a piece is close.':'Cold. Try somewhere else.')}
+  else{Snd.play('select');msg=c[0]==='t'?`Just ${TOYS[+c[1]][1]}. Keep digging!`:'Only dirt. Try another patch!'}
   if(S.digs<=0&&g.got<3)setTimeout(()=>{if(!$('#garden').hidden)dog.src=ART['cat-thinking']},900);
   if(g.got>=3){S.bag++;S.garden=newGarden();save();renderGarden();setTimeout(()=>{if(!$('#garden').hidden)gMsg('A fresh patch to dig. Bottles in your bag can be used in any level.')},2600)}
   else{save();renderGarden()}
@@ -1773,7 +1772,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 /* Update check: compares this build with the version in sw.js on GitHub, then offers a one-tap update.
    Progress lives in the phone's storage and is untouched by a reload; the current board is carried over too. */
 (function(){
-  const BUILD='mb-water-v36';let shown=false;
+  const BUILD='mb-water-v37';let shown=false;
   async function check(){
     if(shown||!navigator.onLine)return;
     try{const r=await fetch('sw.js?check='+Date.now(),{cache:'no-store'});if(!r.ok)return;
