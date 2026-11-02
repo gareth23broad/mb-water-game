@@ -1,7 +1,7 @@
 // Lets the game open without a connection once it has been opened online.
 // Change VERSION whenever you upload a new index.html so players get the update.
-const VERSION = 'mb-water-v18';
-const FILES = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png', './music-main.mp3', './music-brutal.mp3', './music-puzzle.mp3'];
+const VERSION = 'mb-water-v22';
+const FILES = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png', './music-main.mp3', './music-brutal.mp3', './music-puzzle.mp3', './music-tricky.mp3'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {
